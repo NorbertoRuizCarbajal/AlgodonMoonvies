@@ -13,7 +13,8 @@ Equipo 14:
 
 # Flujos
 
-<img width="1536" height="1024" alt="1000045663" src="https://github.com/user-attachments/assets/c5cd3e60-05bc-41f1-b706-8516d7028045" />
+<img width="1536" height="1024" alt="1000045697" src="https://github.com/user-attachments/assets/18f0b106-2b1c-4435-8905-de3b22de47f9" />
+
 
 1.- Home → Buscar → Resultados → Seleccionar película → Detalle
 
