@@ -181,6 +181,8 @@ Al presionar "Enviar" -> Se guarda la calificación y se cierra el modal, regres
 Flujo
 
 Detalle de película -> Calificar -> Se desenfoca el fondo y aparece el modal -> Tocar estrellas -> Enviar -> Regresa a Detalle
+
+
 <img width="414" height="896" alt="PHOTO-2026-09-25-11-52-48" src="https://github.com/user-attachments/assets/66026066-63a4-4944-af14-be5d69ea4d9d" />
 
 
