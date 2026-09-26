@@ -159,3 +159,32 @@ Pantalla que presenta la información completa de una película seleccionada.
 Seleccionar película -> Detalle -> Ver ahora / Favoritos / Calificar / Descargar
 <img width="563" height="1167" alt="1000045653" src="https://github.com/user-attachments/assets/542aa4fe-b827-41a1-9f12-59f4ac1ad3c2" />
 
+
+6. Calificar película
+
+Descripción: Pantalla donde el usuario asigna una calificación con estrellas a la película que acaba de ver o consultar.
+
+Elementos
+
+Encabezado: Color turquesa con el título de la película y botón de regreso.
+Imagen/banner: Portada o fotograma de la película.
+Información técnica: Año de estreno y duración.
+Sinopsis: Descripción breve de la trama.
+Acción principal: Botón "Ver ahora".
+Sección de calificación:
+Texto "Toca para calificar".
+Cinco estrellas seleccionables.
+Botón "Enviar".
+
+Interacciones
+
+Al seleccionar una estrella -> Se marca la calificación correspondiente (1 a 5).
+Al presionar "Enviar" -> Se guarda la calificación otorgada por el usuario.
+Botón de regresar -> Vuelve a la pantalla de Detalle de película.
+
+Flujo
+
+Detalle de película -> Calificar -> Seleccionar estrellas -> Enviar -> Calificación guardada
+<img width="414" height="896" alt="PHOTO-2026-09-25-11-52-48" src="https://github.com/user-attachments/assets/66026066-63a4-4944-af14-be5d69ea4d9d" />
+
+
