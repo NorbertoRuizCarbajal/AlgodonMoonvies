@@ -159,3 +159,30 @@ Pantalla que presenta la información completa de una película seleccionada.
 Seleccionar película -> Detalle -> Ver ahora / Favoritos / Calificar / Descargar
 <img width="563" height="1167" alt="1000045653" src="https://github.com/user-attachments/assets/542aa4fe-b827-41a1-9f12-59f4ac1ad3c2" />
 
+
+6. Calificar película
+
+Descripción: Ventana emergente que aparece sobre la pantalla de Detalle de película cuando el usuario selecciona la opción "Calificar", permitiéndole asignar una puntuación con estrellas.
+
+Elementos
+
+Fondo: La pantalla de Detalle de película se desenfoca (pierde nitidez) para dar contexto visual detrás del modal.
+Modal emergente:
+Texto "Toca para calificar".
+Cinco estrellas seleccionables.
+Botón "Enviar".
+
+
+Interacciones
+
+Al tocar una estrella -> Se marca la calificación correspondiente (1 a 5).
+Al presionar "Enviar" -> Se guarda la calificación y se cierra el modal, regresando a la pantalla de Detalle.
+
+Flujo
+
+Detalle de película -> Calificar -> Se desenfoca el fondo y aparece el modal -> Tocar estrellas -> Enviar -> Regresa a Detalle
+
+
+<img width="414" height="896" alt="PHOTO-2026-09-25-11-52-48" src="https://github.com/user-attachments/assets/66026066-63a4-4944-af14-be5d69ea4d9d" />
+
+
