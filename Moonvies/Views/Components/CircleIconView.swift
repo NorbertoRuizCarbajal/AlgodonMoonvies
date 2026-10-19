@@ -1,8 +1,9 @@
 import SwiftUI
 
+/// Ícono dentro de un círculo blanco (perfil, ajustes, notificaciones, regresar).
+/// Solo dibuja el círculo: cada pantalla decide si lo envuelve en un botón.
 struct CircleIconView: View {
     let systemName: String
-    let accessibilityText: String
     let showsBadge: Bool
 
     var body: some View {
@@ -21,13 +22,11 @@ struct CircleIconView: View {
                     .padding(8)
             }
         }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(accessibilityText)
     }
 }
 
 #Preview {
-    CircleIconView(systemName: "bell", accessibilityText: "Notificaciones", showsBadge: true)
+    CircleIconView(systemName: "bell", showsBadge: true)
         .padding()
         .background(AppTheme().header)
 }

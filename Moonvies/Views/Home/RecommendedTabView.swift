@@ -1,10 +1,15 @@
 import SwiftUI
 
+/// Pestaña "Recomendado": la mejor valorada + top de la semana.
 struct RecommendedTabView: View {
     private let movies = MockMovies().all
 
     private var bestRatedMovie: Movie? {
         movies.max { $0.rating < $1.rating }
+    }
+
+    private var weeklyTop: [Movie] {
+        Array(movies.sorted { $0.rating > $1.rating }.prefix(8))
     }
 
     var body: some View {
@@ -16,13 +21,15 @@ struct RecommendedTabView: View {
                 }
             }
 
-            MovieRowView(title: "Top de la semana", movies: movies)
+            MovieRowView(title: "Top de la semana", movies: weeklyTop)
         }
     }
 }
 
 #Preview {
-    ScrollView {
-        RecommendedTabView()
+    NavigationStack {
+        ScrollView {
+            RecommendedTabView()
+        }
     }
 }

@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Póster dibujado con un color y un ícono (no usamos imágenes con copyright).
+/// Si `width` es `nil`, el póster toma el ancho que le dé la vista padre.
 struct PosterView: View {
     let movie: Movie
     let width: CGFloat?
@@ -13,6 +15,7 @@ struct PosterView: View {
             Image(systemName: movie.posterSymbol)
                 .font(.system(size: height * 0.3))
                 .foregroundStyle(Color.white.opacity(0.35))
+                .accessibilityHidden(true)
 
             if showsTitle {
                 VStack {

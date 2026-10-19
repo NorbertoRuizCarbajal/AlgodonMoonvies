@@ -1,7 +1,9 @@
 import SwiftUI
 
-// Pantalla principal: header, barra de búsqueda y pestañas
+/// Pantalla principal: header, barra de búsqueda y pestañas.
 struct HomeView: View {
+    /// Estado local: solo Home necesita saber qué pestaña está seleccionada.
+    /// Como Home se queda en la base de la pila, la pestaña se conserva al regresar.
     @State private var selectedTab: HomeTab = .recommended
 
     var body: some View {
@@ -15,9 +17,11 @@ struct HomeView: View {
                     .padding(.bottom, 32)
             }
         }
+        .toolbar(.hidden, for: .navigationBar)
     }
 }
 
+/// Muestra el contenido de la pestaña seleccionada.
 struct HomeTabContentView: View {
     let selectedTab: HomeTab
 
@@ -36,5 +40,8 @@ struct HomeTabContentView: View {
 }
 
 #Preview {
-    HomeView()
+    NavigationStack {
+        HomeView()
+    }
+    .environment(FavoritesStore())
 }

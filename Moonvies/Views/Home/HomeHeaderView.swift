@@ -1,27 +1,32 @@
 import SwiftUI
 
+/// Header cian de Home: perfil, logo, ajustes, notificaciones y barra de búsqueda.
 struct HomeHeaderView: View {
-    private let theme = AppTheme()
-
     var body: some View {
         VStack(spacing: 16) {
             ZStack {
                 MoonviesLogoView()
 
                 HStack(spacing: 10) {
-                    CircleIconView(systemName: "person.fill", accessibilityText: "Perfil", showsBadge: false)
+                    CircleIconView(systemName: "person.fill", showsBadge: false)
+                        .accessibilityLabel("Perfil")
                     Spacer()
-                    CircleIconView(systemName: "slider.vertical.3", accessibilityText: "Ajustes", showsBadge: false)
-                    CircleIconView(systemName: "bell", accessibilityText: "Notificaciones", showsBadge: true)
+                    CircleIconView(systemName: "slider.vertical.3", showsBadge: false)
+                        .accessibilityLabel("Ajustes")
+                    CircleIconView(systemName: "bell", showsBadge: true)
+                        .accessibilityLabel("Notificaciones")
+                        .accessibilityValue("Tienes notificaciones nuevas")
                 }
             }
 
-            SearchBarView()
+            // Diagrama: "Tocar barra de búsqueda" → Buscar.
+            NavigationLink(value: Route.search) {
+                SearchBarView()
+            }
+            .accessibilityLabel("Buscar películas")
+            .accessibilityHint("Abre el buscador")
         }
-        .padding(theme.screenPadding)
-        .background(theme.header)
-        .clipShape(RoundedRectangle(cornerRadius: 36))
-        .padding(.horizontal, 8)
+        .headerStyle()
     }
 }
 
@@ -39,7 +44,7 @@ struct MoonviesLogoView: View {
     }
 }
 
-// Barra de búsqueda
+/// Barra de búsqueda de Home. No es un TextField: solo abre la pantalla Buscar.
 struct SearchBarView: View {
     var body: some View {
         HStack(spacing: 10) {
@@ -52,10 +57,11 @@ struct SearchBarView: View {
         .padding(.vertical, 14)
         .background(.white)
         .clipShape(RoundedRectangle(cornerRadius: 18))
-        .accessibilityElement(children: .combine)
     }
 }
 
 #Preview {
-    HomeHeaderView()
+    NavigationStack {
+        HomeHeaderView()
+    }
 }
