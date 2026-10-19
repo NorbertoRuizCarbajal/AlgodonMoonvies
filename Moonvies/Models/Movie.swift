@@ -42,7 +42,11 @@ extension Movie {
 
         return "\(hoursText) y \(minutes) minutos"
     }
+}
 
+// MARK: - Reglas del modelo
+
+extension Movie {
     /// Búsqueda sin importar mayúsculas ni acentos: "parasitos" encuentra "Parásitos".
     func matches(_ text: String) -> Bool {
         title.localizedStandardContains(text)

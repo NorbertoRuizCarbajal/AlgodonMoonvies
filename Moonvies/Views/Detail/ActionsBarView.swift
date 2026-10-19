@@ -1,11 +1,10 @@
 import SwiftUI
 
-/// Los 3 íconos del detalle: favoritos, calificar y descargar.
+/// Las acciones del detalle: agregar a favoritos y calificar.
 struct ActionsBarView: View {
     let isFavorite: Bool
     let onFavorite: () -> Void
     let onRate: () -> Void
-    let onDownload: () -> Void
 
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
@@ -24,18 +23,11 @@ struct ActionsBarView: View {
                 iconColor: .primary,
                 action: onRate
             )
-
-            ActionButtonView(
-                iconName: "arrow.down.circle",
-                title: "Descargar",
-                iconColor: .primary,
-                action: onDownload
-            )
         }
     }
 }
 
-/// Un ícono con su texto abajo. Se reutiliza 3 veces (composición).
+/// Un ícono con su texto abajo. Se reutiliza para cada acción (composición).
 struct ActionButtonView: View {
     let iconName: String
     let title: String
@@ -68,6 +60,6 @@ struct ActionButtonView: View {
 }
 
 #Preview {
-    ActionsBarView(isFavorite: true, onFavorite: {}, onRate: {}, onDownload: {})
+    ActionsBarView(isFavorite: true, onFavorite: {}, onRate: {})
         .padding()
 }
