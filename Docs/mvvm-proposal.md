@@ -1,0 +1,93 @@
+# Propuesta MVVM — Moonvies
+
+## 1. Qué se implementó en esta práctica
+
+Se llevó a código la estrategia de navegación y la organización del estado definidas en `navigation-and-state.md`.
+
+**Flujo principal.** La app arranca en Home, que es la raíz de un `NavigationStack`. La barra de búsqueda abre Buscar con `NavigationLink(value: Route.search)`. Cada póster, el banner de "Mejor valorada hoy", los resultados de búsqueda, los favoritos y las sugerencias abren el Detalle con `NavigationLink(value: Route.detail(movie))`. El enum `Route` define las únicas pantallas a las que se puede navegar, y `RootView` decide qué vista corresponde a cada caso dentro de `navigationDestination(for:)`. Para regresar, Buscar y Detalle usan `@Environment(\.dismiss)`. El Detalle además tiene un botón de inicio que vacía la pila (`path.removeAll()`), que es el paso "Fin → Regresar a Home" del diagrama de flujo.
+
+**Información compartida entre vistas.** Los favoritos viven en `FavoritesStore`, una clase `@Observable` que se crea una sola vez en `MoonviesApp` y se reparte con `.environment(...)`. El Detalle la modifica al tocar el corazón y la pestaña Favoritos de Home la lee. Como ambas pantallas usan la misma instancia, la película agregada aparece en Favoritos al regresar, sin pasar datos a mano entre pantallas. Agregar puede fallar (película repetida o límite alcanzado); el error se lanza con `throws` y el Detalle lo atrapa con `do-catch` para mostrar "Agregada a favoritos" o el mensaje de error, que son las dos ramas del rombo "¿Se agregó a favoritos?".
+
+**Otros datos y dónde viven.** La película del Detalle viaja dentro de la ruta como un `struct` de solo lectura. La pestaña seleccionada es `@State` en `HomeView` y llega al selector con `@Binding`. El texto de búsqueda es `@State` en `SearchView`; como Buscar se queda en la pila mientras se ve un Detalle, el texto se conserva al regresar. Los avisos del Detalle son `@State` local de esa pantalla.
+
+**Cambios respecto a lo planeado.** El catálogo todavía se toma directamente de `MockMovies` en cada vista, porque los datos son locales y no hay carga asíncrona. La ventana de calificar se dejó para la siguiente etapa; por ahora los botones Calificar, Descargar y Ver ahora muestran un aviso de "disponible pronto". Como el diseño usa headers propios, la barra de navegación del sistema se oculta con `.toolbar(.hidden, for: .navigationBar)`, y por eso el gesto de deslizar para regresar no está disponible; el regreso se hace con el botón de cada header.
+
+## 2. Análisis de la estructura actual
+
+Hoy el proyecto tiene modelos (`Movie`, `HomeTab`, `FavoriteError`, `FeedbackMessage`), datos locales (`MockMovies`), un estado compartido (`FavoritesStore`), la navegación (`Route`, `RootView`) y las vistas. Las vistas no solo dibujan la interfaz: también contienen lógica que no tiene que ver con cómo se ve la pantalla. Estas son las responsabilidades que hoy están dentro de las vistas y que podrían salir de ellas:
+
+**`RecommendedTabView`** decide cuál es la película mejor valorada y arma el top de la semana ordenando el catálogo. Elegir y ordenar películas es una regla de negocio; si mañana "mejor valorada hoy" debe cambiar cada día, habría que editar la vista.
+
+**`FavoritesTabView`** convierte la lista de identificadores guardados en películas, recorriendo el catálogo. Es una transformación de datos que no depende de cómo se muestren.
+
+**`SearchView`** limpia el texto, decide cuándo mostrar populares, filtra el catálogo y decide si hubo resultados. Es la lógica completa del rombo "¿Se encontraron resultados?". Hoy no se puede probar sin levantar la vista.
+
+**`MovieDetailView`** es la que más carga tiene. Calcula las sugerencias, decide si agregar o quitar un favorito, atrapa los errores de `FavoritesStore`, elige el texto del aviso y controla cuánto dura en pantalla con un `Task`. Mezcla dibujar la pantalla con todo el sub-flujo de favoritos.
+
+**Acceso a los datos.** Cuatro vistas crean su propio `MockMovies()`. Cada una depende directamente de los datos de prueba, y cambiar a una API real obligaría a tocar todas.
+
+En resumen, las vistas cumplen bien su parte visual y de composición, pero acumulan decisiones (filtrar, ordenar, validar, armar mensajes) que no son su responsabilidad. Eso va contra el principio de responsabilidad única y hace que la lógica no se pueda reutilizar ni probar por separado.
+
+## 3. Propuesta de organización con MVVM
+
+MVVM separa el código en tres capas:
+
+- **Model:** los datos y sus reglas básicas. `Movie` ya cumple este papel: es un `struct` inmutable con propiedades calculadas como `formattedDuration` y la regla `matches(_:)`.
+- **View:** solo describe la interfaz a partir del estado que recibe y avisa cuando el usuario hace algo.
+- **ViewModel:** una clase `@Observable` por pantalla que prepara los datos que la vista muestra, responde a las acciones del usuario y maneja los estados de carga, éxito y error.
+
+### Acceso a los datos: repositorio
+
+Se propone un protocolo `MovieRepository` con una función `fetchMovies() async throws -> [Movie]`. La primera implementación, `MockMovieRepository`, regresaría los datos de `MockMovies`. Los ViewModels recibirían el repositorio en su `init` como el protocolo, no como la clase concreta. Así se aplica la inversión de dependencias: cambiar a una API real o a datos que fallen a propósito para probar errores sería crear otra implementación, sin tocar ViewModels ni vistas. Al ser `async throws`, también abre la puerta al estado de carga con el enum `LoadState` (idle, loading, loaded y error) que vimos en clase.
+
+### ViewModel por pantalla
+
+**`HomeViewModel`** cargaría el catálogo desde el repositorio y guardaría su `LoadState`. Expondría la película mejor valorada, el top de la semana y la lista de películas favoritas, que calcularía a partir de los identificadores de `FavoritesStore`. `RecommendedTabView` y `FavoritesTabView` dejarían de ordenar y de recorrer el catálogo: solo mostrarían lo que el ViewModel ya preparó. La pestaña seleccionada se quedaría como `@State` en la vista, porque es un detalle visual que solo le importa a Home.
+
+**`SearchViewModel`** guardaría el texto de búsqueda y expondría el resultado como el enum `SearchResult` (populares, encontrados, sin resultados). Tendría una función `clearSearch()` para "Intentar nuevamente". La vista se reduciría a conectar el `TextField` con `@Bindable` y a hacer un `switch` sobre el resultado. Esta lógica es la más fácil de probar por separado: se le da un texto y un catálogo y se revisa qué resultado regresa.
+
+**`MovieDetailViewModel`** recibiría la película, el repositorio y el `FavoritesStore`. Expondría si la película es favorita, las sugerencias y el aviso actual. Tendría una función `toggleFavorite()` con todo el sub-flujo: decidir si agregar o quitar, llamar a `add` con `do-catch` y elegir el mensaje de confirmación o de error. También manejaría cuándo se oculta el aviso. La vista solo llamaría a `viewModel.toggleFavorite()` y pintaría el corazón y el aviso según el estado.
+
+### Lo que se queda igual
+
+`FavoritesStore` se mantiene como estado compartido de toda la app, repartido con `.environment(...)`, porque lo usan varias pantallas y es la fuente única de verdad. Los ViewModels lo usan, pero no lo reemplazan ni guardan copias de la lista.
+
+La navegación se queda en `RootView` con el enum `Route`. Los ViewModels no navegan: la vista sigue usando `NavigationLink` y `dismiss`. Así cada ViewModel no depende de cómo está armada la navegación.
+
+Los componentes reutilizables (`PosterView`, `StarsView`, `MovieRowView`, `MovieGridView`, `MessageView`, etc.) no necesitan ViewModel. Solo reciben datos y los dibujan, que es justo lo que debe hacer una vista.
+
+### Cómo se crean los ViewModels
+
+Cada pantalla crearía su ViewModel una sola vez y lo guardaría con `@State`, pasándole lo que necesita en su `init`. Por ejemplo, `RootView` crearía `MovieDetailViewModel(movie: movie, repository: repository, favoritesStore: favoritesStore)` al resolver la ruta `.detail`. Home, al ser la raíz, conservaría su ViewModel mientras la app esté abierta, así el catálogo se carga una sola vez.
+
+### Estructura de carpetas propuesta
+
+```
+Moonvies/
+├── MoonviesApp.swift
+├── Models/          Movie, HomeTab, LoadState, FavoriteError, FeedbackMessage
+├── Data/            MovieRepository (protocolo), MockMovieRepository, MockMovies
+├── State/           FavoritesStore (compartido)
+├── ViewModels/      HomeViewModel, SearchViewModel, MovieDetailViewModel
+├── Navigation/      Route, RootView
+├── Utilities/       AppTheme, makeRows
+└── Views/
+    ├── Components/  vistas reutilizables sin lógica
+    ├── Home/
+    ├── Search/
+    └── Detail/
+```
+
+## 4. Beneficios y riesgos
+
+**Beneficios.** Cada tipo tendría una sola responsabilidad: la vista dibuja, el ViewModel decide y el repositorio trae los datos. La lógica de búsqueda y de favoritos se podría probar en `MoonviesTests` sin abrir la interfaz. Cambiar el origen de los datos solo afectaría al repositorio. Las vistas serían más cortas y fáciles de leer.
+
+**Riesgos.** Hay más archivos y más código para una app todavía pequeña, así que conviene migrar por partes y no todo de golpe. También hay que cuidar no duplicar estado: si un ViewModel guarda su propia copia de los favoritos, se desincronizaría de `FavoritesStore`. Por eso la regla es que los ViewModels lean del store compartido, nunca lo copien.
+
+## 5. Orden propuesto para la siguiente etapa
+
+1. Crear `MovieRepository` y `MockMovieRepository`, y quitar los `MockMovies()` de las vistas.
+2. Crear `SearchViewModel`, porque su lógica es la más aislada y sirve para validar el patrón.
+3. Crear `MovieDetailViewModel` y mover ahí el sub-flujo de favoritos y los avisos.
+4. Crear `HomeViewModel` con la carga del catálogo y el estado `LoadState`.
+5. Agregar pruebas para la búsqueda y para agregar favoritos, incluyendo los casos de error.

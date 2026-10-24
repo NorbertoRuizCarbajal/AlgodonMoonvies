@@ -1,15 +1,22 @@
 import SwiftUI
 
+/// Pestaña "Favoritos". Recibe las películas ya convertidas por el ViewModel.
 struct FavoritesTabView: View {
+    let movies: [Movie]
+
     var body: some View {
-        Text("Aún no hay favoritos")
-            .font(.title3)
-            .foregroundStyle(.secondary)
-            .frame(maxWidth: .infinity)
-            .padding(.top, 80)
+        if movies.isEmpty {
+            MessageView(title: "Aún no hay favoritos")
+        } else {
+            MovieGridView(movies: movies)
+        }
     }
 }
 
 #Preview {
-    FavoritesTabView()
+    NavigationStack {
+        ScrollView {
+            FavoritesTabView(movies: Array(MockMovies().all.prefix(3)))
+        }
+    }
 }

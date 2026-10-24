@@ -1,11 +1,10 @@
 import SwiftUI
 
+/// Pestaña "Recomendado": la mejor valorada del día + top de la semana.
+/// Ya no ordena ni elige películas: recibe los datos listos del ViewModel.
 struct RecommendedTabView: View {
-    private let movies = MockMovies().all
-
-    private var bestRatedMovie: Movie? {
-        movies.max { $0.rating < $1.rating }
-    }
+    let bestRatedMovie: Movie?
+    let weeklyTop: [Movie]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 28) {
@@ -16,13 +15,18 @@ struct RecommendedTabView: View {
                 }
             }
 
-            MovieRowView(title: "Top de la semana", movies: movies)
+            MovieRowView(title: "Top de la semana", movies: weeklyTop)
         }
     }
 }
 
 #Preview {
-    ScrollView {
-        RecommendedTabView()
+    NavigationStack {
+        ScrollView {
+            RecommendedTabView(
+                bestRatedMovie: MockMovies().all[2],
+                weeklyTop: MockMovies().all
+            )
+        }
     }
 }

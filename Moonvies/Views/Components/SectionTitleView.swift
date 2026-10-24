@@ -1,5 +1,6 @@
 import SwiftUI
 
+/// Título de sección ("Mejor valorada hoy", "Top de la semana", "Sugerencias").
 struct SectionTitleView: View {
     let title: String
 

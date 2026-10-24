@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Fila horizontal de pósters con scroll ("Top de la semana", "Sugerencias").
+/// Cada póster navega al detalle con `NavigationLink(value:)`.
 struct MovieRowView: View {
     let title: String
     let movies: [Movie]
@@ -13,14 +15,16 @@ struct MovieRowView: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 14) {
                     ForEach(movies) { movie in
-                        PosterView(
-                            movie: movie,
-                            width: posterWidth,
-                            height: posterWidth * 1.5,
-                            showsTitle: true
-                        )
-                        .accessibilityElement(children: .ignore)
+                        NavigationLink(value: Route.detail(movie)) {
+                            PosterView(
+                                movie: movie,
+                                width: posterWidth,
+                                height: posterWidth * 1.5,
+                                showsTitle: true
+                            )
+                        }
                         .accessibilityLabel("\(movie.title), \(movie.year)")
+                        .accessibilityHint("Toca dos veces para ver el detalle")
                     }
                 }
                 .padding(.horizontal, AppTheme().screenPadding)
@@ -30,5 +34,7 @@ struct MovieRowView: View {
 }
 
 #Preview {
-    MovieRowView(title: "Top de la semana", movies: MockMovies().all)
+    NavigationStack {
+        MovieRowView(title: "Top de la semana", movies: MockMovies().all)
+    }
 }

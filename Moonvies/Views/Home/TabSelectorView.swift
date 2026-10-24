@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// Pestañas personalizadas: Recomendado / Todo / Favoritos.
+/// Recibe la pestaña con `@Binding` porque el estado vive en `HomeView` (vista padre).
 struct TabSelectorView: View {
     @Binding var selectedTab: HomeTab
 
@@ -36,7 +38,7 @@ struct TabButtonView: View {
                 .background(isSelected ? AppTheme().accent : Color.clear)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
         }
-        
+        // VoiceOver dice "seleccionado"; no dependemos solo del color azul.
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
