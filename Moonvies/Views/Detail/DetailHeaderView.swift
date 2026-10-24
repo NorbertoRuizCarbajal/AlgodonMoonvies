@@ -8,13 +8,7 @@ struct DetailHeaderView: View {
 
     var body: some View {
         HStack(spacing: 14) {
-            Button {
-                onBack()
-            } label: {
-                CircleIconView(systemName: "arrow.left", showsBadge: false)
-            }
-            .accessibilityLabel("Regresar")
-            .accessibilityHint("Vuelve a la pantalla anterior")
+            BackButton(action: onBack)
 
             Text(title)
                 .font(.title3)

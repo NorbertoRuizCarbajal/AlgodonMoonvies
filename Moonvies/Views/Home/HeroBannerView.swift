@@ -32,7 +32,7 @@ struct HeroBannerView: View {
 
                     Spacer()
 
-                    Text("VER AHORA")
+                    Text("VER DETALLE")
                         .font(.subheadline)
                         .bold()
                         .foregroundStyle(.white)

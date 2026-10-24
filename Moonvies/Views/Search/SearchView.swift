@@ -1,52 +1,24 @@
 import SwiftUI
 
-/// Resultado del rombo "¿Se encontraron resultados?" del diagrama de flujo.
-enum SearchResult {
-    /// El campo está vacío: se muestran las mejor calificadas.
-    case popular([Movie])
-    /// Sí se encontraron resultados.
-    case found([Movie])
-    /// No se encontraron resultados.
-    case notFound
-}
-
-/// Pantalla Buscar. Filtra en tiempo real mientras escribes.
+/// Pantalla Buscar. El filtrado lo hace `SearchViewModel`; la vista solo lo muestra.
 struct SearchView: View {
-    /// Estado local: solo Buscar usa el texto. Como Buscar sigue en la pila
-    /// mientras ves un detalle, el texto se conserva al regresar.
-    @State private var query = ""
+    @State private var viewModel: SearchViewModel
 
     @Environment(\.dismiss) private var dismiss
 
-    private let movies = MockMovies().all
-
-    /// No se guarda: se calcula cada vez a partir del texto.
-    private var result: SearchResult {
-        let cleanQuery = query.trimmingCharacters(in: .whitespaces)
-
-        guard !cleanQuery.isEmpty else {
-            let popularMovies = movies.sorted { $0.rating > $1.rating }
-            return .popular(Array(popularMovies.prefix(6)))
-        }
-
-        let matchingMovies = movies.filter { $0.matches(cleanQuery) }
-
-        guard !matchingMovies.isEmpty else {
-            return .notFound
-        }
-
-        return .found(matchingMovies)
+    init(viewModel: SearchViewModel) {
+        _viewModel = State(initialValue: viewModel)
     }
 
     var body: some View {
         VStack(spacing: 16) {
-            SearchHeaderView(text: $query) {
+            SearchHeaderView(text: $viewModel.query) {
                 dismiss()
             }
 
             ScrollView {
-                SearchResultsView(result: result) {
-                    query = ""
+                SearchResultsView(result: viewModel.result) {
+                    viewModel.clearSearch()
                 }
                 .padding(.bottom, 32)
             }
@@ -87,6 +59,6 @@ struct SearchResultsView: View {
 
 #Preview {
     NavigationStack {
-        SearchView()
+        SearchView(viewModel: SearchViewModel(moviesStore: .preview()))
     }
 }

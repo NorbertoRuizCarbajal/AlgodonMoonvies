@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Header de Buscar: botón de regresar + campo de texto.
-/// Recibe el texto con `@Binding` porque el estado vive en `SearchView`.
+/// Recibe el texto con `@Binding` porque vive en `SearchViewModel`.
 struct SearchHeaderView: View {
     @Binding var text: String
     let onBack: () -> Void
@@ -14,13 +14,7 @@ struct SearchHeaderView: View {
                 .accessibilityAddTraits(.isHeader)
 
             HStack(spacing: 12) {
-                Button {
-                    onBack()
-                } label: {
-                    CircleIconView(systemName: "arrow.left", showsBadge: false)
-                }
-                .accessibilityLabel("Regresar")
-                .accessibilityHint("Vuelve a la pantalla anterior")
+                BackButton(action: onBack)
 
                 HStack(spacing: 10) {
                     Image(systemName: "magnifyingglass")

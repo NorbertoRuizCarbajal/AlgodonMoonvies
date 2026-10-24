@@ -1,7 +1,7 @@
 import Foundation
 
 /// Datos locales de prueba (18 películas).
-/// Se usa igual que `Constants` en clase: `MockMovies().all`.
+/// Solo la usa `MockMovieRepository`; las vistas ya no la crean directamente.
 /// Incluye los títulos del mockup: buscar "Bajo" da los mismos 3 resultados del diagrama.
 struct MockMovies {
     let all: [Movie] = [
@@ -13,7 +13,7 @@ struct MockMovies {
             durationMinutes: 148,
             rating: 4.7,
             director: "Christopher Nolan",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "Dom Cobb es un ladrón experto en robar secretos del subconsciente mientras la gente sueña. Le ofrecen recuperar su vida a cambio de un trabajo casi imposible: implantar una idea en la mente del heredero de un imperio empresarial.",
             posterHue: 0.58,
             posterSymbol: "square.stack.3d.up.fill"
         ),
@@ -25,7 +25,7 @@ struct MockMovies {
             durationMinutes: 154,
             rating: 4.7,
             director: "Quentin Tarantino",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "Dos sicarios, un boxeador que se niega a perder una pelea arreglada, la esposa de un mafioso y una pareja de asaltantes cruzan sus historias en un Los Ángeles violento y lleno de humor negro.",
             posterHue: 0.02,
             posterSymbol: "briefcase.fill"
         ),
@@ -37,7 +37,7 @@ struct MockMovies {
             durationMinutes: 132,
             rating: 4.8,
             director: "Bong Joon-ho",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "La familia Kim vive en un semisótano y sobrevive como puede. Uno a uno, sus integrantes se infiltran como empleados en la lujosa casa de los Park, en un plan ingenioso que termina desatando consecuencias imprevisibles.",
             posterHue: 0.30,
             posterSymbol: "house.fill"
         ),
@@ -49,7 +49,7 @@ struct MockMovies {
             durationMinutes: 121,
             rating: 4.6,
             director: "George Lucas",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "Luke Skywalker, un joven granjero de Tatooine, se une a un viejo caballero Jedi, a un piloto contrabandista y a dos droides para rescatar a la princesa Leia y enfrentar la Estrella de la Muerte del Imperio.",
             posterHue: 0.64,
             posterSymbol: "sparkles"
         ),
@@ -73,7 +73,7 @@ struct MockMovies {
             durationMinutes: 169,
             rating: 4.7,
             director: "Christopher Nolan",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "Con la Tierra al borde del colapso, un expiloto de la NASA lidera una misión a través de un agujero de gusano para encontrar un nuevo hogar para la humanidad, aun sabiendo que quizá no vuelva a ver a sus hijos.",
             posterHue: 0.09,
             posterSymbol: "globe.americas.fill"
         ),
@@ -85,7 +85,7 @@ struct MockMovies {
             durationMinutes: 175,
             rating: 4.9,
             director: "Francis Ford Coppola",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "Don Vito Corleone encabeza una poderosa familia de la mafia en Nueva York. Su hijo menor, Michael, que quería mantenerse lejos del negocio, termina convirtiéndose poco a poco en su heredero.",
             posterHue: 0.06,
             posterSymbol: "crown.fill"
         ),
@@ -97,7 +97,7 @@ struct MockMovies {
             durationMinutes: 125,
             rating: 4.8,
             director: "Hayao Miyazaki",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "Durante una mudanza, Chihiro y sus padres entran a un mundo de espíritus. Cuando sus padres son convertidos en cerdos, ella tiene que trabajar en una casa de baños mágica para encontrar la forma de salvarlos.",
             posterHue: 0.47,
             posterSymbol: "train.side.front.car"
         ),
@@ -109,7 +109,7 @@ struct MockMovies {
             durationMinutes: 105,
             rating: 4.6,
             director: "Lee Unkrich",
-            synopsis: "Mjeje  seguimos trabajando en la descripción",
+            synopsis: "Miguel sueña con ser músico aunque su familia lo tiene prohibido. En pleno Día de Muertos termina en la Tierra de los Muertos, donde busca a su tatarabuelo para descubrir la verdadera historia de su familia.",
             posterHue: 0.88,
             posterSymbol: "guitars.fill"
         ),
@@ -121,7 +121,7 @@ struct MockMovies {
             durationMinutes: 135,
             rating: 4.4,
             director: "Alfonso Cuarón",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "En la colonia Roma de la Ciudad de México, a inicios de los setenta, Cleo trabaja para una familia de clase media y atraviesa un año que cambiará su vida y la de quienes la rodean.",
             posterHue: 0.55,
             posterSymbol: "airplane"
         ),
@@ -133,7 +133,7 @@ struct MockMovies {
             durationMinutes: 136,
             rating: 4.6,
             director: "Lana y Lilly Wachowski",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "Neo, un programador que lleva una doble vida como hacker, descubre que el mundo que conoce es una simulación creada por máquinas y se une a la resistencia liderada por Morfeo.",
             posterHue: 0.36,
             posterSymbol: "pills.fill"
         ),
@@ -145,7 +145,7 @@ struct MockMovies {
             durationMinutes: 106,
             rating: 4.6,
             director: "Damien Chazelle",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "Andrew, un joven baterista de un conservatorio prestigioso, entra a la banda del temido profesor Fletcher, cuyos métodos extremos lo empujan a perseguir la perfección a cualquier costo.",
             posterHue: 0.12,
             posterSymbol: "music.quarternote.3"
         ),
@@ -157,7 +157,7 @@ struct MockMovies {
             durationMinutes: 120,
             rating: 4.5,
             director: "George Miller",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "En un desierto postapocalíptico, Max se alía con la imperatriz Furiosa, que huye del tirano Immortan Joe junto a un grupo de mujeres que él mantenía cautivas.",
             posterHue: 0.07,
             posterSymbol: "flame.fill"
         ),
@@ -169,7 +169,7 @@ struct MockMovies {
             durationMinutes: 130,
             rating: 4.3,
             director: "Rian Johnson",
-            synopsis: "jeje seguimos trabajando en la descripción",
+            synopsis: "Tras la misteriosa muerte del novelista Harlan Thrombey la noche de su cumpleaños 85, el detective Benoit Blanc investiga a su excéntrica familia, donde todos parecen tener un motivo.",
             posterHue: 0.98,
             posterSymbol: "key.fill"
         ),
@@ -181,7 +181,7 @@ struct MockMovies {
             durationMinutes: 126,
             rating: 4.0,
             director: "Josh Boone",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "Hazel y Gus, dos adolescentes que se conocen en un grupo de apoyo para jóvenes con cáncer, se enamoran y viajan a Ámsterdam para conocer al autor de su libro favorito.",
             posterHue: 0.52,
             posterSymbol: "star.fill"
         ),
@@ -193,7 +193,7 @@ struct MockMovies {
             durationMinutes: 120,
             rating: 3.9,
             director: "Frank Marshall",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "Una tormenta obliga a un equipo científico a evacuar la Antártida y dejar atrás a sus ocho perros de trineo. Su guía hará todo lo posible por volver a rescatarlos antes de que sea tarde.",
             posterHue: 0.56,
             posterSymbol: "snowflake"
         ),
@@ -205,7 +205,7 @@ struct MockMovies {
             durationMinutes: 110,
             rating: 3.3,
             director: "Samu Fuentes",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "Martinón es el último habitante de un pueblo perdido en las montañas y vive como trampero. Solo baja al valle cuando se retira la nieve para vender pieles, hasta que la llegada de una mujer a su vida lo obliga a elegir entre mostrarse vulnerable o dejarse llevar por su lado más salvaje.",
             posterHue: 0.08,
             posterSymbol: "mountain.2.fill"
         ),
@@ -217,7 +217,7 @@ struct MockMovies {
             durationMinutes: 87,
             rating: 3.8,
             director: "Stephen Hillenburg",
-            synopsis: "jeje  seguimos trabajando en la descripción",
+            synopsis: "Cuando la corona del Rey Neptuno es robada y Don Cangrejo es acusado, Bob Esponja y Patricio viajan a una ciudad lejana y peligrosa para recuperarla y frustrar el plan de Plankton para dominar Fondo de Bikini.",
             posterHue: 0.15,
             posterSymbol: "fish.fill"
         )
