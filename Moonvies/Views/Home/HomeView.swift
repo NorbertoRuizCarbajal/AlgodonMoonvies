@@ -1,17 +1,17 @@
 import SwiftUI
 
-/// Pantalla principal: header, barra de búsqueda y pestañas.
-/// Solo dibuja: los datos ya vienen preparados por `HomeViewModel`.
+/// Pantalla principal: header, barra de búsqueda y pestañas
+/// Solo dibuja: los datos ya vienen preparados por `HomeViewModel`
 struct HomeView: View {
     @State private var viewModel: HomeViewModel
 
     /// Estado de interfaz: solo Home necesita saber qué pestaña está seleccionada,
-    /// por eso se queda en la vista y no en el ViewModel.
+    /// por eso se queda en la vista y no en el ViewModel
     @State private var selectedTab: HomeTab = .recommended
 
     init(viewModel: HomeViewModel) {
         // `State(initialValue:)` guarda el ViewModel la primera vez y lo conserva
-        // aunque la vista se vuelva a crear.
+        // aunque la vista se vuelva a crear
         _viewModel = State(initialValue: viewModel)
     }
 
@@ -30,7 +30,7 @@ struct HomeView: View {
     }
 }
 
-/// Decide qué mostrar según el estado de la carga y la pestaña seleccionada.
+/// Decide qué mostrar según el estado de la carga y la pestaña seleccionada
 struct HomeTabContentView: View {
     let selectedTab: HomeTab
     let viewModel: HomeViewModel
@@ -55,7 +55,7 @@ struct HomeTabContentView: View {
                     weeklyTop: viewModel.weeklyTop
                 )
             case .all:
-                // Pestaña "Todo": por ahora sin contenido.
+                // Pestaña "Todo": por ahora sin contenido
                 VStack {
                 }
             case .favorites:
@@ -67,6 +67,6 @@ struct HomeTabContentView: View {
 
 #Preview {
     NavigationStack {
-        HomeView(viewModel: HomeViewModel(moviesStore: .preview(), favoritesStore: FavoritesStore()))
+        HomeView(viewModel: HomeViewModel(moviesStore: .preview(), favoritesStore: .preview()))
     }
 }

@@ -1,10 +1,9 @@
 import SwiftUI
 
-/// Colores y medidas tomados del mockup, en un solo lugar.
+/// Colores y medidas tomados del mockup, en un solo lugar
 struct AppTheme {
     let header = Color(red: 0.62, green: 0.95, blue: 1.0)
     let accent = Color(red: 0.23, green: 0.68, blue: 1.0)
-    let badge = Color.pink
     let favorite = Color.red
 
     let screenPadding: CGFloat = 20
@@ -12,7 +11,7 @@ struct AppTheme {
 }
 
 extension View {
-    /// Estilo del header cian que comparten Home, Buscar y Detalle.
+    /// Estilo del header cian que comparten Home, Buscar y Detalle
     func headerStyle() -> some View {
         self
             .padding(AppTheme().screenPadding)

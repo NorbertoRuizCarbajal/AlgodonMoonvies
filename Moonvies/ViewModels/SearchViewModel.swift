@@ -1,10 +1,11 @@
 import Foundation
 import Observation
 
-/// Lógica de la pantalla Buscar. Antes vivía completa dentro de `SearchView`.
+/// Lógica de la pantalla Buscar. Antes vivía completa dentro de `SearchView`
+@MainActor
 @Observable
-class SearchViewModel {
-    /// Texto escrito por el usuario. Se conserva al ir al detalle y regresar.
+final class SearchViewModel {
+    /// Texto escrito por el usuario. Se conserva al ir al detalle y regresar
     var query = ""
 
     private let moviesStore: MoviesStore
@@ -13,7 +14,7 @@ class SearchViewModel {
         self.moviesStore = moviesStore
     }
 
-    /// No se guarda: se calcula cada vez a partir del texto, por eso filtra en tiempo real.
+    /// No se guarda: se calcula cada vez a partir del texto, por eso filtra en tiempo real
     var result: SearchResult {
         let cleanQuery = query.trimmingCharacters(in: .whitespaces)
 
@@ -31,7 +32,7 @@ class SearchViewModel {
         return .found(matchingMovies)
     }
 
-    /// "Intentar nuevamente": regresa al estado inicial de Buscar.
+    /// "Intentar nuevamente": regresa al estado inicial de Buscar
     func clearSearch() {
         query = ""
     }

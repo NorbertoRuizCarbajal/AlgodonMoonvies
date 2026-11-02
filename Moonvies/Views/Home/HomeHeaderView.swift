@@ -1,25 +1,20 @@
 import SwiftUI
 
-/// Header cian de Home: perfil, logo, ajustes, notificaciones y barra de búsqueda.
+/// Header cian de Home: logo, ajustes y barra de búsqueda
 struct HomeHeaderView: View {
     var body: some View {
         VStack(spacing: 16) {
             ZStack {
                 MoonviesLogoView()
 
-                HStack(spacing: 10) {
-                    CircleIconView(systemName: "person.fill", showsBadge: false)
-                        .accessibilityLabel("Perfil")
+                HStack {
                     Spacer()
-                    CircleIconView(systemName: "slider.vertical.3", showsBadge: false)
+                    CircleIconView(systemName: "slider.vertical.3")
                         .accessibilityLabel("Ajustes")
-                    CircleIconView(systemName: "bell", showsBadge: true)
-                        .accessibilityLabel("Notificaciones")
-                        .accessibilityValue("Tienes notificaciones nuevas")
                 }
             }
 
-            // Diagrama: "Tocar barra de búsqueda" → Buscar.
+            // Diagrama: "Tocar barra de búsqueda" → Buscar
             NavigationLink(value: Route.search) {
                 SearchBarView()
             }
@@ -44,7 +39,7 @@ struct MoonviesLogoView: View {
     }
 }
 
-/// Barra de búsqueda de Home. No es un TextField: solo abre la pantalla Buscar.
+/// Barra de búsqueda de Home. No es un TextField: solo abre la pantalla Buscar
 struct SearchBarView: View {
     var body: some View {
         HStack(spacing: 10) {

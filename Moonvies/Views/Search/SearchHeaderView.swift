@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Header de Buscar: botón de regresar + campo de texto.
-/// Recibe el texto con `@Binding` porque vive en `SearchViewModel`.
+/// Header de Buscar: botón de regresar + campo de texto
+/// Recibe el texto con `@Binding` porque vive en `SearchViewModel`
 struct SearchHeaderView: View {
     @Binding var text: String
     let onBack: () -> Void

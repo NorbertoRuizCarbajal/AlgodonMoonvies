@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Año, duración, estrellas, sinopsis y director.
+/// Año, duración, estrellas, sinopsis y director
 struct MovieInfoView: View {
     let movie: Movie
 

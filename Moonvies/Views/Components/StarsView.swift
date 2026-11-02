@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Muestra la calificación de una película con 5 estrellas (solo lectura).
+/// Muestra la calificación de una película con 5 estrellas (solo lectura)
 struct StarsView: View {
     let rating: Double
 

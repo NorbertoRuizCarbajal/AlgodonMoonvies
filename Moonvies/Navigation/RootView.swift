@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Raíz de la navegación. Aquí vive la pila de pantallas (`path`),
 /// aquí se decide qué vista corresponde a cada `Route`
-/// y aquí se crea el ViewModel de cada pantalla con lo que necesita.
+/// y aquí se crea el ViewModel de cada pantalla con lo que necesita
 struct RootView: View {
     @Environment(MoviesStore.self) private var moviesStore
     @Environment(FavoritesStore.self) private var favoritesStore
@@ -35,7 +35,7 @@ struct RootView: View {
         }
     }
 
-    /// "Fin → Regresar a Home" del diagrama: vacía la pila de un solo paso.
+    /// "Fin → Regresar a Home" del diagrama: vacía la pila de un solo paso
     private func goHome() {
         path.removeAll()
     }
@@ -43,6 +43,6 @@ struct RootView: View {
 
 #Preview {
     RootView()
-        .environment(MoviesStore(repository: MockMovieRepository()))
-        .environment(FavoritesStore())
+        .environment(MoviesStore(movieService: MovieService()))
+        .environment(FavoritesStore.preview())
 }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Las acciones del detalle: agregar a favoritos y calificar.
+/// Las acciones del detalle: agregar a favoritos y calificar
 struct ActionsBarView: View {
     let isFavorite: Bool
     let onFavorite: () -> Void
@@ -8,7 +8,7 @@ struct ActionsBarView: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
-            // El texto cambia junto con el color, así no dependemos solo del rojo.
+            // El texto cambia junto con el color, así no dependemos solo del rojo
             ActionButtonView(
                 iconName: isFavorite ? "heart.fill" : "heart",
                 title: isFavorite ? "En favoritos" : "Agregar a favoritos",
@@ -27,7 +27,7 @@ struct ActionsBarView: View {
     }
 }
 
-/// Un ícono con su texto abajo. Se reutiliza para cada acción (composición).
+/// Un ícono con su texto abajo. Se reutiliza para cada acción (composición)
 struct ActionButtonView: View {
     let iconName: String
     let title: String

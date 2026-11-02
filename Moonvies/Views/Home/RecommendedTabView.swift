@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Pestaña "Recomendado": la mejor valorada del día + top de la semana.
-/// Ya no ordena ni elige películas: recibe los datos listos del ViewModel.
+/// Pestaña "Recomendado": la mejor valorada del día + top de la semana
+/// Ya no ordena ni elige películas: recibe los datos listos del ViewModel
 struct RecommendedTabView: View {
     let bestRatedMovie: Movie?
     let weeklyTop: [Movie]

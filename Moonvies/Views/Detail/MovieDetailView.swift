@@ -1,10 +1,10 @@
 import SwiftUI
 
 /// Detalle de una película. Solo dibuja la pantalla y avisa al ViewModel
-/// cuando el usuario toca algo; la lógica vive en `MovieDetailViewModel`.
+/// cuando el usuario toca algo; la lógica vive en `MovieDetailViewModel`
 struct MovieDetailView: View {
     @State private var viewModel: MovieDetailViewModel
-    /// "Regresar a Home": lo resuelve `RootView` vaciando la pila.
+    /// "Regresar a Home": lo resuelve `RootView` vaciando la pila
     let onGoHome: () -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -60,7 +60,7 @@ struct MovieDetailView: View {
             viewModel: MovieDetailViewModel(
                 movie: MockMovies().all[17],
                 moviesStore: .preview(),
-                favoritesStore: FavoritesStore()
+                favoritesStore: .preview()
             ),
             onGoHome: {}
         )

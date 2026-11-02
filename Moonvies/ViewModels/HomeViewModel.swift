@@ -1,10 +1,11 @@
 import Foundation
 import Observation
 
-/// Prepara los datos que muestra Home.
-/// Antes esta lógica estaba repartida en `RecommendedTabView` y `FavoritesTabView`.
+/// Prepara los datos que muestra Home
+/// Antes esta lógica estaba repartida en `RecommendedTabView` y `FavoritesTabView`
+@MainActor
 @Observable
-class HomeViewModel {
+final class HomeViewModel {
     private let moviesStore: MoviesStore
     private let favoritesStore: FavoritesStore
 
@@ -17,7 +18,7 @@ class HomeViewModel {
         moviesStore.state
     }
 
-    /// "Mejor valorada hoy": rota cada día entre las 5 mejor calificadas.
+    /// "Mejor valorada hoy": rota cada día entre las 5 mejor calificadas
     var bestRatedToday: Movie? {
         let topMovies = Array(moviesSortedByRating.prefix(5))
         guard !topMovies.isEmpty else { return nil }
@@ -30,7 +31,7 @@ class HomeViewModel {
         Array(moviesSortedByRating.prefix(8))
     }
 
-    /// Convierte los identificadores guardados en películas, respetando su orden.
+    /// Convierte los identificadores guardados en películas, respetando su orden
     var favoriteMovies: [Movie] {
         var result: [Movie] = []
 
