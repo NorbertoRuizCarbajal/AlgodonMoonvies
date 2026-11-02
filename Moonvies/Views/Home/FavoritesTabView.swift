@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Pestaña "Favoritos". Recibe las películas ya convertidas por el ViewModel.
+/// Pestaña "Favoritos". Recibe las películas ya convertidas por el ViewModel
 struct FavoritesTabView: View {
     let movies: [Movie]
 

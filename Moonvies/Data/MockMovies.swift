@@ -1,8 +1,8 @@
 import Foundation
 
-/// Datos locales de prueba (18 películas).
-/// Solo la usa `MockMovieRepository`; las vistas ya no la crean directamente.
-/// Incluye los títulos del mockup: buscar "Bajo" da los mismos 3 resultados del diagrama.
+/// Datos locales de prueba (18 películas)
+/// Solo la usa `MovieService`; las vistas ya no la crean directamente
+/// Incluye los títulos del mockup: buscar "Bajo" da los mismos 3 resultados del diagrama
 struct MockMovies {
     let all: [Movie] = [
         Movie(

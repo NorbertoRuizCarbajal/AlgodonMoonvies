@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Banner grande de "Mejor valorada hoy". Tocarlo abre el detalle de la película.
+/// Banner grande de "Mejor valorada hoy". Tocarlo abre el detalle de la película
 struct HeroBannerView: View {
     let movie: Movie
 
@@ -11,7 +11,7 @@ struct HeroBannerView: View {
             ZStack(alignment: .bottomLeading) {
                 PosterView(movie: movie, width: nil, height: 210, showsTitle: false)
 
-                // Oscurece el póster para que el texto blanco se lea bien.
+                // Oscurece el póster para que el texto blanco se lea bien
                 Color.black
                     .opacity(0.3)
 

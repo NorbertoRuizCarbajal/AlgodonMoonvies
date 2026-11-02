@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Póster grande de la película en el detalle.
+/// Póster grande de la película en el detalle
 struct PosterHeroView: View {
     let movie: Movie
 

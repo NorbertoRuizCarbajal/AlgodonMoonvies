@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Mensaje centrado, con botón opcional.
-/// Se usa para "Aún no hay favoritos" y "No se encontraron resultados".
+/// Mensaje centrado, con botón opcional
+/// Se usa para "Aún no hay favoritos" y "No se encontraron resultados"
 struct MessageView: View {
     let title: String
     let buttonTitle: String?

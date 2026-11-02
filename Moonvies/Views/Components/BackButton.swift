@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Botón circular de regresar. Antes estaba repetido igual en Buscar y en Detalle.
+/// Botón circular de regresar. Antes estaba repetido igual en Buscar y en Detalle
 struct BackButton: View {
     let action: () -> Void
 
@@ -8,7 +8,7 @@ struct BackButton: View {
         Button {
             action()
         } label: {
-            CircleIconView(systemName: "arrow.left", showsBadge: false)
+            CircleIconView(systemName: "arrow.left")
         }
         .accessibilityLabel("Regresar")
         .accessibilityHint("Vuelve a la pantalla anterior")

@@ -1,20 +1,20 @@
 import Foundation
 import Observation
 
-/// Fuente única de verdad del catálogo.
-/// Lo carga una sola vez desde el repositorio y lo comparten Home, Buscar y Detalle.
-/// Antes cada vista creaba su propio `MockMovies()`.
+/// Fuente única de verdad del catálogo
+/// Lo carga una sola vez desde el servicio y lo comparten Home, Buscar y Detalle
+@MainActor
 @Observable
-class MoviesStore {
+final class MoviesStore {
     private(set) var state: LoadState = .idle
 
-    private let repository: MovieRepository
+    private let movieService: any MovieServiceProtocol
 
-    init(repository: MovieRepository) {
-        self.repository = repository
+    init(movieService: any MovieServiceProtocol) {
+        self.movieService = movieService
     }
 
-    /// Las películas cargadas. Mientras carga o si hubo error, regresa una lista vacía.
+    /// Las películas cargadas. Mientras carga o si hubo error, regresa una lista vacía
     var movies: [Movie] {
         switch state {
         case .loaded(let movies):
@@ -24,11 +24,12 @@ class MoviesStore {
         }
     }
 
+    /// Controla la llamada al servicio: cargando → éxito o error
     func loadMovies() async {
         state = .loading
 
         do {
-            let movies = try await repository.fetchMovies()
+            let movies = try await movieService.fetchMovies()
             state = .loaded(movies)
         } catch {
             state = .error(.loadFailed)
@@ -43,9 +44,9 @@ class MoviesStore {
 // MARK: - Datos para los #Preview
 
 extension MoviesStore {
-    /// Store ya cargado con los datos de prueba, para que los #Preview no tengan que esperar.
+    /// Store ya cargado con los datos de prueba, para que los #Preview no tengan que esperar
     static func preview() -> MoviesStore {
-        let store = MoviesStore(repository: MockMovieRepository())
+        let store = MoviesStore(movieService: MovieService())
         store.state = .loaded(MockMovies().all)
         return store
     }

@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Aviso flotante ("Agregada a favoritos", errores, "Calificar estará disponible pronto").
-/// Usa ícono + texto, así el mensaje no depende solo del color.
+/// Aviso flotante ("Agregada a favoritos", errores, "Calificar estará disponible pronto")
+/// Usa ícono + texto, así el mensaje no depende solo del color
 struct FeedbackBannerView: View {
     let message: FeedbackMessage
 

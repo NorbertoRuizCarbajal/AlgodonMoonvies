@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Header del detalle: regresar, título de la película y botón para volver a Home.
+/// Header del detalle: regresar, título de la película y botón para volver a Home
 struct DetailHeaderView: View {
     let title: String
     let onBack: () -> Void
@@ -22,7 +22,7 @@ struct DetailHeaderView: View {
             Button {
                 onGoHome()
             } label: {
-                CircleIconView(systemName: "house.fill", showsBadge: false)
+                CircleIconView(systemName: "house.fill")
             }
             .accessibilityLabel("Inicio")
             .accessibilityHint("Regresa a la pantalla principal")

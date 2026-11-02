@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Cuadrícula de 2 columnas hecha con VStack + HStack y la función genérica `makeRows`.
-/// Se usa en Buscar y en la pestaña Favoritos.
+/// Cuadrícula de 2 columnas hecha con VStack + HStack y la función genérica `makeRows`
+/// Se usa en Buscar y en la pestaña Favoritos
 struct MovieGridView: View {
     let movies: [Movie]
 
@@ -19,7 +19,7 @@ struct MovieGridView: View {
                         MovieGridItemView(movie: movie)
                     }
 
-                    // Si la última fila tiene una sola película, este espacio la mantiene del mismo ancho.
+                    // Si la última fila tiene una sola película, este espacio la mantiene del mismo ancho
                     if rows[index].count < columns {
                         Color.clear
                             .frame(maxWidth: .infinity)
@@ -31,7 +31,7 @@ struct MovieGridView: View {
     }
 }
 
-/// Una celda de la cuadrícula: póster + título + año y duración.
+/// Una celda de la cuadrícula: póster + título + año y duración
 struct MovieGridItemView: View {
     let movie: Movie
 

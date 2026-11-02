@@ -1,28 +1,28 @@
 import Foundation
 
-/// Modelo de una película.
+/// Modelo de una película
 /// Es `struct` (value semantics) con propiedades `let`: viaja por la navegación
-/// como una copia de solo lectura. `Hashable` es necesario para usarla en `Route`.
+/// como una copia de solo lectura. `Hashable` es necesario para usarla en `Route`
 struct Movie: Identifiable, Hashable {
     let id: String
     let title: String
     let originalTitle: String
     let year: String
     let durationMinutes: Int
-    /// Calificación de 0 a 5.
+    /// Calificación de 0 a 5
     let rating: Double
     let director: String
     let synopsis: String
-    /// Color (0 a 1) del póster que se dibuja en lugar de una imagen.
+    /// Color (0 a 1) del póster que se dibuja en lugar de una imagen
     let posterHue: Double
-    /// Ícono (SF Symbol) que decora el póster.
+    /// Ícono (SF Symbol) que decora el póster
     let posterSymbol: String
 }
 
 // MARK: - Textos para la interfaz
 
 extension Movie {
-    /// Mismo formato que el mockup: "1h:27m".
+    /// Mismo formato que el mockup: "1h:27m"
     var formattedDuration: String {
         let hours = durationMinutes / 60
         let minutes = durationMinutes % 60
@@ -34,7 +34,7 @@ extension Movie {
         return "\(hours)h:\(minutes)m"
     }
 
-    /// Versión para VoiceOver: "1 hora y 27 minutos".
+    /// Versión para VoiceOver: "1 hora y 27 minutos"
     var spokenDuration: String {
         let hours = durationMinutes / 60
         let minutes = durationMinutes % 60
@@ -47,7 +47,7 @@ extension Movie {
 // MARK: - Reglas del modelo
 
 extension Movie {
-    /// Búsqueda sin importar mayúsculas ni acentos: "parasitos" encuentra "Parásitos".
+    /// Búsqueda sin importar mayúsculas ni acentos: "parasitos" encuentra "Parásitos"
     func matches(_ text: String) -> Bool {
         title.localizedStandardContains(text)
             || originalTitle.localizedStandardContains(text)

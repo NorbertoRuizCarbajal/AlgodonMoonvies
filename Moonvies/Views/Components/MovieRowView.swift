@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Fila horizontal de pósters con scroll ("Top de la semana", "Sugerencias").
-/// Cada póster navega al detalle con `NavigationLink(value:)`.
+/// Fila horizontal de pósters con scroll ("Top de la semana", "Sugerencias")
+/// Cada póster navega al detalle con `NavigationLink(value:)`
 struct MovieRowView: View {
     let title: String
     let movies: [Movie]

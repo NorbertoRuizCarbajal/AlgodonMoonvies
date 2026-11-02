@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Pantalla Buscar. El filtrado lo hace `SearchViewModel`; la vista solo lo muestra.
+/// Pantalla Buscar. El filtrado lo hace `SearchViewModel`; la vista solo lo muestra
 struct SearchView: View {
     @State private var viewModel: SearchViewModel
 
@@ -27,10 +27,10 @@ struct SearchView: View {
     }
 }
 
-/// Muestra una cosa distinta para cada caso de `SearchResult`.
+/// Muestra una cosa distinta para cada caso de `SearchResult`
 struct SearchResultsView: View {
     let result: SearchResult
-    /// "Intentar nuevamente": regresa a Buscar limpiando el texto.
+    /// "Intentar nuevamente": regresa a Buscar limpiando el texto
     let onRetry: () -> Void
 
     var body: some View {

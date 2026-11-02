@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Póster dibujado con un color y un ícono (no usamos imágenes con copyright).
-/// Si `width` es `nil`, el póster toma el ancho que le dé la vista padre.
+/// Póster dibujado con un color y un ícono (no usamos imágenes con copyright)
+/// Si `width` es `nil`, el póster toma el ancho que le dé la vista padre
 struct PosterView: View {
     let movie: Movie
     let width: CGFloat?

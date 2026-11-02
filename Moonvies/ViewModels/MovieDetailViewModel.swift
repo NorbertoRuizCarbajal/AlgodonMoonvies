@@ -1,10 +1,11 @@
 import Foundation
 import Observation
 
-/// Lógica del detalle de una película: favoritos, sugerencias y avisos.
-/// Antes todo esto vivía dentro de `MovieDetailView`.
+/// Lógica del detalle de una película: favoritos, sugerencias y avisos
+/// Antes todo esto vivía dentro de `MovieDetailView`
+@MainActor
 @Observable
-class MovieDetailViewModel {
+final class MovieDetailViewModel {
     let movie: Movie
     private(set) var message: FeedbackMessage?
 
@@ -17,7 +18,7 @@ class MovieDetailViewModel {
         self.favoritesStore = favoritesStore
     }
 
-    /// Se lee del store compartido: nunca se desincroniza con la pestaña Favoritos.
+    /// Se lee del store compartido: nunca se desincroniza con la pestaña Favoritos
     var isFavorite: Bool {
         favoritesStore.isFavorite(movie)
     }
@@ -33,13 +34,13 @@ class MovieDetailViewModel {
     ///   Sí → corazón rojo + "Agregada a favoritos"
     ///   No → mensaje de error
     func toggleFavorite() {
-        guard !isFavorite else {
-            favoritesStore.remove(movie)
-            showMessage("Eliminada de favoritos", isError: false)
-            return
-        }
-
         do {
+            guard !isFavorite else {
+                try favoritesStore.remove(movie)
+                showMessage("Eliminada de favoritos", isError: false)
+                return
+            }
+
             try favoritesStore.add(movie)
             showMessage("Agregada a favoritos", isError: false)
         } catch let favoriteError as FavoriteError {
@@ -64,7 +65,7 @@ class MovieDetailViewModel {
         Task {
             try? await Task.sleep(for: .seconds(2.5))
 
-            // Si mientras tanto llegó otro aviso, ese no se toca.
+            // Si mientras tanto llegó otro aviso, ese no se toca
             guard self.message?.id == newMessage.id else { return }
             self.message = nil
         }

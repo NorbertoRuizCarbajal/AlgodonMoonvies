@@ -1,6 +1,6 @@
 import Foundation
 
-/// Errores al cargar el catálogo de películas.
+/// Errores al cargar el catálogo de películas
 enum MovieError: Error {
     case loadFailed
 
