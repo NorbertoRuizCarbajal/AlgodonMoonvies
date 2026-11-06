@@ -2,3 +2,6 @@
 xcuserdata/
 DerivedData/
 *.xcuserstate
+
+# Llaves privadas (no subir tokens al repositorio)
+Moonvies/Config/Secrets.swift

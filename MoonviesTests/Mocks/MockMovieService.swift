@@ -20,3 +20,13 @@ struct MockMovieService: MovieServiceProtocol {
         return moviesToReturn
     }
 }
+
+/// Servicio de prueba que lanza un `MovieError` concreto
+struct FailingMovieService: MovieServiceProtocol {
+
+    let error: MovieError
+
+    func fetchMovies() async throws -> [Movie] {
+        throw error
+    }
+}
