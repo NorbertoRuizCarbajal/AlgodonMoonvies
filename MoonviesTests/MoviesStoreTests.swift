@@ -45,6 +45,43 @@ final class MoviesStoreTests: XCTestCase {
         XCTAssertTrue(store.movies.isEmpty)
     }
 
+    func testLoadMoviesSetsEmptyWhenServiceReturnsNoMovies() async {
+        // Arrange: la consulta sale bien pero sin resultados
+        let store = MoviesStore(movieService: MockMovieService(moviesToReturn: []))
+
+        // Act
+        await store.loadMovies()
+
+        // Assert
+        XCTAssertEqual(store.state, .empty)
+        XCTAssertTrue(store.movies.isEmpty)
+    }
+
+    func testLoadMoviesKeepsTheSpecificErrorFromService() async {
+        // Arrange: una respuesta HTTP no exitosa (401)
+        let store = MoviesStore(movieService: FailingMovieService(error: .httpStatus(401)))
+
+        // Act
+        await store.loadMovies()
+
+        // Assert
+        XCTAssertEqual(store.state, .error(.httpStatus(401)))
+    }
+
+    func testLoadMoviesCanRecoverAfterAnError() async {
+        // Arrange: primero falla
+        let failingStore = MoviesStore(movieService: FailingMovieService(error: .noConnection))
+        await failingStore.loadMovies()
+        XCTAssertEqual(failingStore.state, .error(.noConnection))
+
+        // Act: al reintentar con un servicio que sí responde, carga el contenido
+        let store = MoviesStore(movieService: MockMovieService(moviesToReturn: TestMovies.all))
+        await store.loadMovies()
+
+        // Assert
+        XCTAssertEqual(store.state, .loaded(TestMovies.all))
+    }
+
     func testMovieWithIDFindsMovie() async {
         // Arrange
         let store = MoviesStore(movieService: MockMovieService(moviesToReturn: TestMovies.all))

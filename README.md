@@ -184,3 +184,13 @@ Detalle de película -> Calificar -> Se desenfoca el fondo y aparece el modal ->
 
 
 <img width="414" height="896" alt="PHOTO-2026-09-25-11-52-48" src="https://github.com/user-attachments/assets/66026066-63a4-4944-af14-be5d69ea4d9d" />
+
+
+# Configuración del token de TMDB
+
+El token **no** se sube al repositorio. Para correr la app:
+
+1. Copia `Config/Secrets.example.swift` a `Moonvies/Config/Secrets.swift`
+   (ese archivo ya está en el `.gitignore`).
+2. Pega tu "API Read Access Token" de TMDB en `tmdbToken`.
+3. Compila y corre. Si falta el token, la app muestra un mensaje de error en lugar de fallar en silencio.

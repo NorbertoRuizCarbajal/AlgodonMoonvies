@@ -24,7 +24,7 @@ struct SearchHeaderView: View {
                     TextField("Buscar películas...", text: $text)
                         .foregroundStyle(.black)
                         .accessibilityLabel("Buscar películas")
-                        .accessibilityHint("Escribe el título o el director")
+                        .accessibilityHint("Escribe el título de la película")
 
                     if !text.isEmpty {
                         Button {

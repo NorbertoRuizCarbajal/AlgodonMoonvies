@@ -1,23 +1,19 @@
 import SwiftUI
 
-/// Año, duración, estrellas, sinopsis y director
+/// Año, estrellas y sinopsis
 struct MovieInfoView: View {
     let movie: Movie
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text("\(movie.year) | \(movie.formattedDuration)")
+            Text(movie.year)
                 .font(.headline)
-                .accessibilityLabel("Estreno \(movie.year), duración \(movie.spokenDuration)")
+                .accessibilityLabel("Estreno \(movie.year)")
 
             StarsView(rating: movie.rating)
 
             Text(movie.synopsis)
                 .font(.body)
-
-            Text("Dirección: \(movie.director)")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
         }
     }
 }

@@ -43,6 +43,6 @@ struct RootView: View {
 
 #Preview {
     RootView()
-        .environment(MoviesStore(movieService: MovieService()))
+        .environment(MoviesStore.preview())
         .environment(FavoritesStore.preview())
 }

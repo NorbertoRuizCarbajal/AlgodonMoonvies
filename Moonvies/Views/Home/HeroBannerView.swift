@@ -24,7 +24,7 @@ struct HeroBannerView: View {
 
                         HStack(spacing: 6) {
                             StarsView(rating: movie.rating)
-                            Text("\(movie.year) | \(movie.formattedDuration)")
+                            Text(movie.year)
                                 .font(.caption)
                         }
                     }
