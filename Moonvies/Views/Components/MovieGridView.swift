@@ -46,14 +46,14 @@ struct MovieGridItemView: View {
                     .foregroundStyle(.primary)
                     .lineLimit(1)
 
-                Text("\(movie.year) | \(movie.formattedDuration)")
+                Text(movie.year)
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(movie.title), \(movie.year), \(movie.spokenDuration)")
+        .accessibilityLabel("\(movie.title), \(movie.year)")
         .accessibilityHint("Toca dos veces para ver el detalle")
         .accessibilityAddTraits(.isButton)
     }

@@ -38,7 +38,14 @@ struct HomeTabContentView: View {
     var body: some View {
         switch viewModel.loadState {
         case .idle, .loading:
-            MessageView(title: "Cargando películas...")
+            LoadingView(title: "Cargando películas...")
+
+        case .empty:
+            MessageView(title: "No hay películas para mostrar por ahora.", buttonTitle: "Actualizar") {
+                Task {
+                    await viewModel.retryLoading()
+                }
+            }
 
         case .error(let movieError):
             MessageView(title: movieError.message, buttonTitle: "Reintentar") {

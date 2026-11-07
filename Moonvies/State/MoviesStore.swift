@@ -2,7 +2,6 @@ import Foundation
 import Observation
 
 /// Fuente única de verdad del catálogo
-/// Lo carga una sola vez desde el servicio y lo comparten Home, Buscar y Detalle
 @MainActor
 @Observable
 final class MoviesStore {
@@ -14,24 +13,28 @@ final class MoviesStore {
         self.movieService = movieService
     }
 
-    /// Las películas cargadas. Mientras carga o si hubo error, regresa una lista vacía
+    /// Películas cargadas (vacío si no hay contenido)
     var movies: [Movie] {
         switch state {
         case .loaded(let movies):
             return movies
-        case .idle, .loading, .error:
+        case .idle, .loading, .empty, .error:
             return []
         }
     }
 
-    /// Controla la llamada al servicio: cargando → éxito o error
+    /// Controla la llamada al servicio: cargando → contenido, vacío o error
     func loadMovies() async {
         state = .loading
 
         do {
             let movies = try await movieService.fetchMovies()
-            state = .loaded(movies)
+            state = movies.isEmpty ? .empty : .loaded(movies)
+        } catch let movieError as MovieError {
+            print("Error al cargar películas:", movieError)
+            state = .error(movieError)
         } catch {
+            print("Error al cargar películas:", error)
             state = .error(.loadFailed)
         }
     }
