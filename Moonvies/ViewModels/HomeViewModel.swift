@@ -2,16 +2,17 @@ import Foundation
 import Observation
 
 /// Prepara los datos que muestra Home
-/// Antes esta lógica estaba repartida en `RecommendedTabView` y `FavoritesTabView`
 @MainActor
 @Observable
 final class HomeViewModel {
     private let moviesStore: MoviesStore
     private let favoritesStore: FavoritesStore
+    private let watchlistStore: WatchlistStore
 
-    init(moviesStore: MoviesStore, favoritesStore: FavoritesStore) {
+    init(moviesStore: MoviesStore, favoritesStore: FavoritesStore, watchlistStore: WatchlistStore) {
         self.moviesStore = moviesStore
         self.favoritesStore = favoritesStore
+        self.watchlistStore = watchlistStore
     }
 
     var loadState: LoadState {
@@ -31,22 +32,42 @@ final class HomeViewModel {
         Array(moviesSortedByRating.prefix(8))
     }
 
-    /// Convierte los identificadores guardados en películas, respetando su orden
+    /// Pestaña "Todo": el catálogo completo en el orden de TMDB
+    var allMovies: [Movie] {
+        moviesStore.movies
+    }
+
+    var watchlistMovies: [Movie] {
+        watchlistStore.movies
+    }
+
     var favoriteMovies: [Movie] {
-        var result: [Movie] = []
+        favoritesStore.movies
+    }
 
-        for id in favoritesStore.favoriteIDs {
-            guard let movie = moviesStore.movie(withID: id) else {
-                continue
-            }
-            result.append(movie)
-        }
+    /// Número que aparece en la campana de notificaciones
+    var remindersCount: Int {
+        watchlistStore.reminders(today: Date()).count
+    }
 
-        return result
+    var canLoadMore: Bool {
+        moviesStore.canLoadMore
+    }
+
+    var isLoadingMore: Bool {
+        moviesStore.isLoadingMore
+    }
+
+    var loadMoreError: MovieError? {
+        moviesStore.loadMoreError
     }
 
     func retryLoading() async {
         await moviesStore.loadMovies()
+    }
+
+    func loadMore() async {
+        await moviesStore.loadMoreMovies()
     }
 
     private var moviesSortedByRating: [Movie] {

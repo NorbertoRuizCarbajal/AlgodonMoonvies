@@ -13,7 +13,7 @@ struct HeroBannerView: View {
 
                 // Oscurece el póster para que el texto blanco se lea bien
                 Color.black
-                    .opacity(0.3)
+                    .opacity(0.5)
 
                 HStack(alignment: .bottom) {
                     VStack(alignment: .leading, spacing: 4) {
@@ -55,6 +55,6 @@ struct HeroBannerView: View {
 
 #Preview {
     NavigationStack {
-        HeroBannerView(movie: MockMovies().all[0])
+        HeroBannerView(movie: .sample)
     }
 }

@@ -82,27 +82,58 @@ final class MoviesStoreTests: XCTestCase {
         XCTAssertEqual(store.state, .loaded(TestMovies.all))
     }
 
-    func testMovieWithIDFindsMovie() async {
+    func testLoadMoreMoviesAppendsTheNextPage() async {
         // Arrange
-        let store = MoviesStore(movieService: MockMovieService(moviesToReturn: TestMovies.all))
+        let store = MoviesStore(movieService: MockMovieService(pages: [[TestMovies.coco], [TestMovies.roma]]))
         await store.loadMovies()
+        XCTAssertTrue(store.canLoadMore)
 
         // Act
-        let movie = store.movie(withID: "coco")
+        await store.loadMoreMovies()
 
         // Assert
-        XCTAssertEqual(movie, TestMovies.coco)
+        XCTAssertEqual(store.movies, [TestMovies.coco, TestMovies.roma])
+        XCTAssertFalse(store.canLoadMore)
     }
 
-    func testMovieWithIDReturnsNilWhenItDoesNotExist() async {
-        // Arrange
-        let store = MoviesStore(movieService: MockMovieService(moviesToReturn: TestMovies.all))
+    func testLoadMoreMoviesSkipsMoviesThatWereAlreadyLoaded() async {
+        // Arrange: TMDB puede repetir una película entre páginas
+        let pages = [[TestMovies.coco, TestMovies.roma], [TestMovies.roma, TestMovies.parasite]]
+        let store = MoviesStore(movieService: MockMovieService(pages: pages))
         await store.loadMovies()
 
         // Act
-        let movie = store.movie(withID: "no-existe")
+        await store.loadMoreMovies()
 
         // Assert
-        XCTAssertNil(movie)
+        XCTAssertEqual(store.movies, [TestMovies.coco, TestMovies.roma, TestMovies.parasite])
+    }
+
+    func testLoadMoreMoviesKeepsTheMoviesWhenItFails() async {
+        // Arrange
+        let service = MockMovieService(pages: [[TestMovies.coco], [TestMovies.roma]], failingPage: 2)
+        let store = MoviesStore(movieService: service)
+        await store.loadMovies()
+
+        // Act
+        await store.loadMoreMovies()
+
+        // Assert
+        XCTAssertEqual(store.movies, [TestMovies.coco])
+        XCTAssertEqual(store.loadMoreError, .noConnection)
+        XCTAssertTrue(store.canLoadMore)
+    }
+
+    func testLoadMoreMoviesDoesNothingOnTheLastPage() async {
+        // Arrange
+        let store = MoviesStore(movieService: MockMovieService(moviesToReturn: [TestMovies.coco]))
+        await store.loadMovies()
+
+        // Act
+        await store.loadMoreMovies()
+
+        // Assert
+        XCTAssertEqual(store.movies, [TestMovies.coco])
+        XCTAssertFalse(store.canLoadMore)
     }
 }

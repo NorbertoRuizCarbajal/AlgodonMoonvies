@@ -6,6 +6,12 @@ import Observation
 @Observable
 final class MoviesStore {
     private(set) var state: LoadState = .idle
+    private(set) var isLoadingMore = false
+    /// Error al pedir más páginas; no borra las películas que ya se cargaron
+    private(set) var loadMoreError: MovieError?
+
+    private var currentPage = 0
+    private var totalPages = 0
 
     private let movieService: any MovieServiceProtocol
 
@@ -23,13 +29,21 @@ final class MoviesStore {
         }
     }
 
+    var canLoadMore: Bool {
+        guard case .loaded = state else { return false }
+        return currentPage < totalPages
+    }
+
     /// Controla la llamada al servicio: cargando → contenido, vacío o error
     func loadMovies() async {
         state = .loading
+        loadMoreError = nil
 
         do {
-            let movies = try await movieService.fetchMovies()
-            state = movies.isEmpty ? .empty : .loaded(movies)
+            let page = try await movieService.fetchMovies(page: 1)
+            currentPage = page.page
+            totalPages = page.totalPages
+            state = page.movies.isEmpty ? .empty : .loaded(page.movies)
         } catch let movieError as MovieError {
             print("Error al cargar películas:", movieError)
             state = .error(movieError)
@@ -39,18 +53,42 @@ final class MoviesStore {
         }
     }
 
-    func movie(withID id: String) -> Movie? {
-        movies.first { $0.id == id }
+    /// Busca en TMDB. No cambia el catálogo: el resultado lo guarda la pantalla Buscar
+    func searchMovies(query: String) async throws -> [Movie] {
+        try await movieService.searchMovies(query: query)
+    }
+
+    /// Agrega la siguiente página al final, sin repetir películas
+    func loadMoreMovies() async {
+        guard canLoadMore, !isLoadingMore else { return }
+
+        isLoadingMore = true
+        loadMoreError = nil
+        defer { isLoadingMore = false }
+
+        do {
+            let page = try await movieService.fetchMovies(page: currentPage + 1)
+            let loadedIDs = Set(movies.map { $0.id })
+            let newMovies = page.movies.filter { !loadedIDs.contains($0.id) }
+
+            currentPage = page.page
+            totalPages = page.totalPages
+            state = .loaded(movies + newMovies)
+        } catch let movieError as MovieError {
+            loadMoreError = movieError
+        } catch {
+            loadMoreError = .loadFailed
+        }
     }
 }
 
 // MARK: - Datos para los #Preview
 
 extension MoviesStore {
-    /// Store ya cargado con los datos de prueba, para que los #Preview no tengan que esperar
+    /// Store ya cargado, para que los #Preview no tengan que esperar
     static func preview() -> MoviesStore {
         let store = MoviesStore(movieService: MovieService())
-        store.state = .loaded(MockMovies().all)
+        store.state = .loaded(Movie.samples)
         return store
     }
 }

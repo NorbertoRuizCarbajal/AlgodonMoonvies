@@ -8,13 +8,13 @@ struct FavoritesStoreTests {
     @Test
     func initLoadsSavedFavorites() {
         // Arrange
-        let mockService = MockFavoritesService(savedIDs: ["coco", "roma"])
+        let mockService = MockFavoritesService(savedMovies: [TestMovies.coco, TestMovies.roma])
 
         // Act
         let store = FavoritesStore(favoritesService: mockService)
 
         // Assert
-        #expect(store.favoriteIDs == ["coco", "roma"])
+        #expect(store.movies == [TestMovies.coco, TestMovies.roma])
         #expect(store.isFavorite(TestMovies.coco))
     }
 
@@ -29,8 +29,8 @@ struct FavoritesStoreTests {
         try store.add(TestMovies.roma)
 
         // Assert
-        #expect(store.favoriteIDs == ["roma", "coco"])
-        #expect(mockService.savedIDs == ["roma", "coco"])
+        #expect(store.movies == [TestMovies.roma, TestMovies.coco])
+        #expect(mockService.savedMovies == [TestMovies.roma, TestMovies.coco])
     }
 
     @Test
@@ -43,7 +43,7 @@ struct FavoritesStoreTests {
         #expect(throws: FavoriteError.alreadyAdded) {
             try store.add(TestMovies.coco)
         }
-        #expect(store.favoriteIDs == ["coco"])
+        #expect(store.movies == [TestMovies.coco])
     }
 
     @Test
@@ -59,7 +59,7 @@ struct FavoritesStoreTests {
         #expect(throws: FavoriteError.limitReached) {
             try store.add(TestMovies.coco)
         }
-        #expect(store.favoriteIDs.count == store.maximumFavorites)
+        #expect(store.movies.count == store.maximumFavorites)
     }
 
     @Test
@@ -71,33 +71,33 @@ struct FavoritesStoreTests {
         #expect(throws: FavoriteError.saveFailed) {
             try store.add(TestMovies.coco)
         }
-        #expect(store.favoriteIDs.isEmpty)
+        #expect(store.movies.isEmpty)
     }
 
     @Test
     func removeDeletesFavoriteFromListAndService() throws {
         // Arrange
-        let mockService = MockFavoritesService(savedIDs: ["coco", "roma"])
+        let mockService = MockFavoritesService(savedMovies: [TestMovies.coco, TestMovies.roma])
         let store = FavoritesStore(favoritesService: mockService)
 
         // Act
         try store.remove(TestMovies.coco)
 
         // Assert
-        #expect(store.favoriteIDs == ["roma"])
-        #expect(mockService.savedIDs == ["roma"])
+        #expect(store.movies == [TestMovies.roma])
+        #expect(mockService.savedMovies == [TestMovies.roma])
         #expect(!store.isFavorite(TestMovies.coco))
     }
 
     @Test
     func removeThrowsRemoveFailedAndKeepsListWhenServiceFails() {
         // Arrange
-        let store = FavoritesStore(favoritesService: MockFavoritesService(savedIDs: ["coco"], shouldFail: true))
+        let store = FavoritesStore(favoritesService: MockFavoritesService(savedMovies: [TestMovies.coco], shouldFail: true))
 
         // Act y Assert
         #expect(throws: FavoriteError.removeFailed) {
             try store.remove(TestMovies.coco)
         }
-        #expect(store.favoriteIDs == ["coco"])
+        #expect(store.movies == [TestMovies.coco])
     }
 }

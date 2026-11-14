@@ -17,7 +17,7 @@ struct HomeView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            HomeHeaderView()
+            HomeHeaderView(remindersCount: viewModel.remindersCount)
 
             TabSelectorView(selectedTab: $selectedTab)
 
@@ -36,44 +36,62 @@ struct HomeTabContentView: View {
     let viewModel: HomeViewModel
 
     var body: some View {
-        switch viewModel.loadState {
-        case .idle, .loading:
-            LoadingView(title: "Cargando películas...")
+        switch selectedTab {
+        // Favoritos y Por ver están guardados en el dispositivo, no dependen de la carga
+        case .favorites:
+            MovieListTabView(movies: viewModel.favoriteMovies, emptyTitle: "Aún no hay favoritos")
+        case .watchlist:
+            MovieListTabView(movies: viewModel.watchlistMovies, emptyTitle: "Aún no tienes películas por ver")
+        case .recommended, .all:
+            LoadStateView(state: viewModel.loadState, onRetry: retry) {
+                catalogContent
+            }
+        }
+    }
 
-        case .empty:
-            MessageView(title: "No hay películas para mostrar por ahora.", buttonTitle: "Actualizar") {
-                Task {
-                    await viewModel.retryLoading()
+    @ViewBuilder
+    private var catalogContent: some View {
+        if selectedTab == .recommended {
+            RecommendedTabView(
+                bestRatedMovie: viewModel.bestRatedToday,
+                weeklyTop: viewModel.weeklyTop
+            )
+        } else {
+            VStack(spacing: 24) {
+                MovieListTabView(movies: viewModel.allMovies, emptyTitle: "No hay películas por ahora")
+
+                if viewModel.canLoadMore {
+                    LoadMoreView(
+                        isLoading: viewModel.isLoadingMore,
+                        errorMessage: viewModel.loadMoreError?.message,
+                        onLoadMore: loadMore
+                    )
                 }
             }
+        }
+    }
 
-        case .error(let movieError):
-            MessageView(title: movieError.message, buttonTitle: "Reintentar") {
-                Task {
-                    await viewModel.retryLoading()
-                }
-            }
+    private func retry() {
+        Task {
+            await viewModel.retryLoading()
+        }
+    }
 
-        case .loaded:
-            switch selectedTab {
-            case .recommended:
-                RecommendedTabView(
-                    bestRatedMovie: viewModel.bestRatedToday,
-                    weeklyTop: viewModel.weeklyTop
-                )
-            case .all:
-                // Pestaña "Todo": por ahora sin contenido
-                VStack {
-                }
-            case .favorites:
-                FavoritesTabView(movies: viewModel.favoriteMovies)
-            }
+    private func loadMore() {
+        Task {
+            await viewModel.loadMore()
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        HomeView(viewModel: HomeViewModel(moviesStore: .preview(), favoritesStore: .preview()))
+        HomeView(
+            viewModel: HomeViewModel(
+                moviesStore: .preview(),
+                favoritesStore: .preview(),
+                watchlistStore: .preview()
+            )
+        )
     }
 }

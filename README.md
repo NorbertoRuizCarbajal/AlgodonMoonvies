@@ -1,196 +1,198 @@
 # AlgodonMoonvies
-Aplicación de películas con TMDB
 
-Objetivo: Permitir explorar películas, buscar una película, consultar su información y administrar favoritas.
+Aplicación iOS de películas con la API de **TMDB** (Opción A del proyecto integrador).
 
+**Objetivo:** permitir explorar películas, buscar una película, consultar su información, administrar favoritas y recordar las películas pendientes por ver.
 
-Equipo 14: 
+**Equipo 14:**
 
--Sánchez Baños Lizeth Marisol
-
--Ruiz Carbajal Norberto 
-
-
-# Flujos
-
-<img width="1536" height="1024" alt="1000045697" src="https://github.com/user-attachments/assets/18f0b106-2b1c-4435-8905-de3b22de47f9" />
-
-
-1.- Home → Buscar → Resultados → Seleccionar película → Detalle
-
-2.- Home → Buscar → Introducir búsqueda → No hay resultados → Regresar
-
-3.- Home → Favoritos → Seleccionar película → Detalle
-
-4.- Home → Película → Detalle → Agregar a Favoritos → Favoritos
-
-
-# Especificación de pantallas
-
-##  1. Pantalla Principal
-
-**Descripción:**
-La pantalla principal de la aplicación, desde donde el usuario puede explorar películas, realizar búsquedas y acceder a sus diferentes secciones.
-
-###  Elementos
-* **Encabezado:** Color turquesa.
-* **Marca:** Nombre/logotipo de la aplicación *TMDB Movies*.
-* **Controles principales:**
-  * Botón para acceder a listas personalizadas.
-  * Botón de Favoritos.
-  * Botón de cuenta/perfil.
-  * Barra de búsqueda.
-* **Organización de contenido:**
-  * Sección de películas populares de la semana.
-  * Sección de películas por género (Ej. Acción y otros géneros disponibles).
-  * Flechas para desplazarse horizontalmente entre las películas de cada sección.
-* **Tarjetas de películas:** Cada una cuenta con:
-  * Imagen
-  * Título
-  * Descripción
-
-###  Interacciones
-* **Al seleccionar la barra de búsqueda**  Dirige a la *Pantalla de búsqueda*.
-* **Al seleccionar una película**  Dirige a *Detalle de película*.
-* **Al seleccionar Favoritos**  Dirige a la pantalla de *Favoritos*.
-* **Al seleccionar Listas**  Dirige a *Listas personalizadas*.
-* **Al seleccionar Perfil**  Dirige a la *Cuenta del usuario*.
-* **Al interactuar con las flechas**  Permite navegar/desplazarse entre las películas de cada categoría.
-  <img width="594" height="1184" alt="1000045641" src="https://github.com/user-attachments/assets/3545a10a-e94a-4e2c-aeba-cd8ba1468925" />
-
-
-## 2. Buscar película
-
-**Descripción:**
-Pantalla destinada a que el usuario introduzca el nombre de una película y consulte los resultados disponibles.
-
-### Elementos
-* **Encabezado:** Color turquesa con el título "Buscar".
-* **Controles principales:**
-  * Botón de regreso.
-  * Barra de búsqueda con icono de búsqueda.
-  * Botones de configuración/notificaciones.
-
-### Interacciones
-* **Al introducir el nombre de una película** -> El sistema procesa la búsqueda.
-  * **Si existen coincidencias** -> Dirige a *Resultados de búsqueda*.
-  * **Si no existen coincidencias** -> Dirige a *No se encontraron resultados*.
-* **Al seleccionar el botón de regreso** -> Devuelve a la pantalla *Home*.
-<img width="577" height="1184" alt="1000045644" src="https://github.com/user-attachments/assets/69e3184a-04c3-4207-9afa-be4654d88520" />
+- Sánchez Baños Lizeth Marisol
+- Ruiz Carbajal Norberto
 
 ---
 
-## 3. No se encontraron resultados
+## Cómo ejecutar el proyecto
 
-**Descripción:**
-Pantalla que informa al usuario cuando la búsqueda realizada no devuelve ninguna película.
+1. Abre `Moonvies.xcodeproj` en **Xcode 26** o superior (deployment target iOS 26.5).
+2. Crea el archivo `Moonvies/Config/Secrets.swift` (ya está en el `.gitignore`, el token no se sube al repositorio):
 
-### Elementos
-* **Encabezado:** Color turquesa.
-* **Navegación:** Botón de regreso.
-* **Búsqueda:** Barra de búsqueda con el término introducido.
-* **Aviso:** Mensaje central indicando: *“No se encontraron resultados”*.
+   ```swift
+   import Foundation
 
-### Interacciones
-* **En la barra de búsqueda** -> El usuario puede modificar o realizar una nueva búsqueda.
-* **Al seleccionar el botón de regreso** -> Permite regresar a la pantalla anterior.
+   enum Secrets {
+       static let tmdbToken = "TU_TOKEN"
+   }
+   ```
 
-### Flujo
-Buscar -> Introducir película -> No se encontraron resultados -> Nueva búsqueda / Regresar
-<img width="573" height="1172" alt="1000045647" src="https://github.com/user-attachments/assets/b88b0e6d-8478-4179-b304-357f1f5ad20e" />
+3. Pega tu **API Read Access Token** de TMDB en `tmdbToken` (se obtiene en themoviedb.org → Ajustes → API).
+4. Elige un simulador de iPhone y corre la app con **Cmd + R**.
+5. Para correr las pruebas: **Cmd + U** (resultados en el navegador de pruebas, **Cmd + 6**).
 
----
-
-## 4. Favoritos
-
-**Descripción:**
-Pantalla donde el usuario puede consultar las películas que ha marcado como favoritas.
-
-### Elementos
-* **Encabezado:** Barra superior turquesa.
-* **Búsqueda:** Barra de búsqueda.
-* **Pestañas de navegación:**
-  * Recomendado
-  * Todo
-  * **Favoritos** (Esta pestaña aparece seleccionada).
-* **Contenido:** Cuadrícula de películas favoritas mostrando el póster de cada película.
-
-### Interacciones
-* **Al seleccionar una película** -> Dirige a *Detalle de película*.
-* **En las pestañas** -> El usuario puede consultar diferentes categorías.
-* **En la barra de búsqueda** -> Permite localizar películas específicas.
-* **Sincronización:** Una película agregada desde la pantalla de detalle aparecerá automáticamente en esta sección.
-
-### Flujo
-Home -> Favoritos -> Seleccionar película -> Detalle
-
-<img width="580" height="1176" alt="1000045650" src="https://github.com/user-attachments/assets/ef32b797-8def-4dae-b33f-e0deb013f754" />
+Si falta el token, la app muestra el mensaje "Falta el token de TMDB" en lugar de fallar en silencio.
 
 ---
 
-## 5. Detalle de película
+## Flujos
 
-**Descripción:**
-Pantalla que presenta la información completa de una película seleccionada.
+<img width="1536" height="1024" alt="Diagrama de flujo" src="https://github.com/user-attachments/assets/18f0b106-2b1c-4435-8905-de3b22de47f9" />
 
-### Elementos
-* **Navegación:** Botón para regresar.
-* **Cabecera:** 
-  * Nombre de la película.
-  * Imagen/video de portada con botón de reproducción.
-* **Información técnica:** Año de estreno, duración y calificación mediante estrellas.
-* **Sinopsis:** Descripción de la trama.
-* **Acciones principales:**
-  * Botón *Ver ahora*.
-  * Opción *Agregar a Favoritos*.
-  * Opción *Calificar*.
-  * Opción *Descargar*.
-* **Sección de Sugerencias:** Películas recomendadas relacionadas.
+| # | Flujo | Cómo se recorre en la app |
+|---|---|---|
+| 1 | Inicio → lista de películas → detalle | Home → pestaña **Recomendado** o **Todo** → tocar una película |
+| 2 | Inicio → búsqueda → resultados → detalle | Home → barra de búsqueda → escribir → tocar un resultado |
+| 3 | Búsqueda sin resultados | Buscar → escribir algo que no existe → "No se encontraron resultados" → **Intentar nuevamente** |
+| 4 | Inicio → favoritos → película guardada → detalle | Home → pestaña **Favoritos** → tocar una película |
+| 5 | Detalle → agregar a favoritos | Detalle → **Agregar a favoritos** → aparece en la pestaña Favoritos |
+| 6 | Detalle → Por ver → recordatorio | Detalle → **Agregar a Por ver** → a las 2 semanas llega la notificación → Home → campana → recordatorio → detalle |
 
-### Interacciones
-* **Botón "Ver ahora"** -> Inicia la reproducción de la película.
-* **Opción "Agregar a Favoritos"** -> Agrega la película a la lista de favoritos del usuario.
-* **Opción "Calificar"** -> Permite registrar una valoración.
-* **Opción "Descargar"** -> Inicia la descarga del contenido.
-* **Al seleccionar una sugerencia** -> Abre el *Detalle de película* de esa recomendación.
-* **Botón de regresar** -> Vuelve a la pantalla anterior.
+---
 
-### Flujo
-Seleccionar película -> Detalle -> Ver ahora / Favoritos / Calificar / Descargar
-<img width="563" height="1167" alt="1000045653" src="https://github.com/user-attachments/assets/542aa4fe-b827-41a1-9f12-59f4ac1ad3c2" />
+## Funcionalidades
 
+### MVP (rúbrica)
 
-6. Calificar película
+- **Lista de películas desde TMDB** (`GET /3/movie/popular`) con póster, título, año y calificación.
+- **Búsqueda en TMDB** (`GET /3/search/movie`) con resultados en tiempo real mientras se escribe.
+- **Búsqueda sin resultados:** mensaje y botón "Intentar nuevamente".
+- **Detalle** con póster, título, **fecha de estreno**, calificación de TMDB, sinopsis y sugerencias.
+- **Agregar y quitar favoritas**, con límite de 20 y mensajes de confirmación o error.
+- **Persistencia local** de favoritos y de Por ver con **SwiftData** (no se pierden al cerrar la app).
+- **Estados de UI:** cargando, error con "Reintentar", catálogo vacío, sin resultados, favoritos vacíos y Por ver vacío.
 
-Descripción: Ventana emergente que aparece sobre la pantalla de Detalle de película cuando el usuario selecciona la opción "Calificar", permitiéndole asignar una puntuación con estrellas.
+### Funcionalidades adicionales
 
-Elementos
+- **Paginación:** botón "Cargar más" en la pestaña Todo (sin repetir películas).
+- **Por ver:** lista de películas para ver después, guardada en el dispositivo.
+- **Notificaciones de Por ver:** recordatorio cuando una película lleva 2 semanas pendiente (ver abajo).
 
-Fondo: La pantalla de Detalle de película se desenfoca (pierde nitidez) para dar contexto visual detrás del modal.
-Modal emergente:
-Texto "Toca para calificar".
-Cinco estrellas seleccionables.
-Botón "Enviar".
+---
 
+## Pantallas
 
-Interacciones
+### 1. Home
+- Header cian con el logo **Moonvies**, la **campana de notificaciones** y la barra de búsqueda.
+- La campana muestra un número rojo con los recordatorios pendientes.
+- Pestañas: **Recomendado** (mejor valorada hoy + top de la semana), **Todo** (catálogo con paginación), **Favoritos** y **Por ver**.
 
-Al tocar una estrella -> Se marca la calificación correspondiente (1 a 5).
-Al presionar "Enviar" -> Se guarda la calificación y se cierra el modal, regresando a la pantalla de Detalle.
+### 2. Buscar
+- Botón de regresar y campo de texto.
+- Campo vacío → "Populares en Moonvies".
+- Con texto → busca en TMDB: "Buscando películas...", resultados, "No se encontraron resultados" o el error con "Reintentar".
 
-Flujo
+### 3. Detalle de película
+- Botón de regresar y botón para volver a Home.
+- Póster, fecha de estreno, estrellas con la calificación de TMDB y sinopsis.
+- Acciones: **Agregar a favoritos** y **Agregar a Por ver**.
+- Sugerencias: otras películas bien calificadas del catálogo.
 
-Detalle de película -> Calificar -> Se desenfoca el fondo y aparece el modal -> Tocar estrellas -> Enviar -> Regresa a Detalle
+### 4. Notificaciones
+- Se abre con la campana de Home.
+- Lista de películas que llevan 2 semanas o más en Por ver, con el mensaje
+  *"Hace 2 semanas tienes pendiente por ver …"*. Tocar una abre su detalle.
+- Si no hay pendientes, muestra "No tienes películas pendientes por ahora".
 
+---
 
-<img width="414" height="896" alt="PHOTO-2026-09-25-11-52-48" src="https://github.com/user-attachments/assets/66026066-63a4-4944-af14-be5d69ea4d9d" />
+## Notificaciones de "Por ver"
 
+Cuando el usuario agrega una película a **Por ver**:
 
-# Configuración del token de TMDB
+1. `WatchlistStore` guarda la película **con la fecha** en SwiftData.
+2. Si se guardó bien, pide a `NotificationService` programar una **notificación local** para dentro de 14 días:
+   *"Hace 2 semanas tienes pendiente por ver Coco"*. La primera vez, iOS pide permiso al usuario.
+3. Si la película se quita de Por ver, el recordatorio se cancela.
+4. La pantalla **Notificaciones** calcula, con la fecha guardada, qué películas llevan 14 días o más pendientes.
 
-El token **no** se sube al repositorio. Para correr la app:
+No se necesita servidor: son notificaciones locales (`UserNotifications`). `NotificationDelegate` permite que también se vean si la app está abierta.
 
-1. Copia `Config/Secrets.example.swift` a `Moonvies/Config/Secrets.swift`
-   (ese archivo ya está en el `.gitignore`).
-2. Pega tu "API Read Access Token" de TMDB en `tmdbToken`.
-3. Compila y corre. Si falta el token, la app muestra un mensaje de error en lugar de fallar en silencio.
+**Cómo probarlo en clase sin esperar 2 semanas:** en `Models/WatchlistReminder.swift` cambia `minimumDays` de `14` a `0`. Al agregar una película a Por ver, la notificación llega a los 5 segundos y la película aparece de inmediato en la pantalla Notificaciones. Después regrésalo a `14`.
+
+---
+
+## Tecnologías
+
+| Tema | Cómo se usa |
+|---|---|
+| **SwiftUI** | Toda la interfaz, con componentes reutilizables (`PosterView`, `MessageView`, `LoadStateView`, etc.) |
+| **Navegación** | `NavigationStack` con `path` y el enum `Route` (`search`, `notifications`, `detail`) en `RootView` |
+| **Estado** | `@Observable`, `@State`, `@Binding`, `@Environment` y stores compartidos como fuente única de verdad |
+| **Networking** | `URLSession` + `async/await` en `MovieService`, con token Bearer y validación del código HTTP |
+| **Codable** | `TMDBMoviesResponse` y `TMDBMovie` (`Decodable` + `CodingKeys`), convertidos al modelo `Movie` |
+| **Persistencia** | SwiftData: `FavoriteMovie` y `WatchlistMovie` (`@Model`), `ModelContext`, `FetchDescriptor` y `#Predicate` |
+| **Concurrencia** | `async/await`, `Task`, `.task(id:)` para cancelar búsquedas viejas, `@MainActor` |
+| **Errores** | `MovieError`, `FavoriteError` y `WatchlistError` con mensajes claros para el usuario |
+| **Notificaciones** | `UserNotifications` (`UNTimeIntervalNotificationTrigger`) |
+| **Pruebas** | XCTest y Swift Testing, con mocks de todos los servicios |
+
+---
+
+## Arquitectura (MVVM + servicios)
+
+```
+Views ──▶ ViewModels ──▶ Stores (estado compartido) ──▶ Services (protocolos) ──▶ TMDB / SwiftData / iOS
+```
+
+| Capa | Archivos | Responsabilidad |
+|---|---|---|
+| **Models** | `Movie`, `TMDBMovie`, `FavoriteMovie`, `WatchlistMovie`, `WatchlistItem`, `WatchlistReminder`, `LoadState`, `SearchResult`, errores | Datos y reglas puras (fecha en español, texto de los recordatorios) |
+| **Services** | `MovieService`, `FavoritesService`, `WatchlistService`, `NotificationService`, `PersistenceController` | Acceso a la API, a SwiftData y a las notificaciones. Cada uno tiene su **protocolo** |
+| **State** | `MoviesStore`, `FavoritesStore`, `WatchlistStore` | Fuente única de verdad, compartida por todas las pantallas |
+| **ViewModels** | `HomeViewModel`, `SearchViewModel`, `MovieDetailViewModel`, `NotificationsViewModel` | Preparan los datos de cada pantalla y reaccionan a las acciones del usuario |
+| **Views** | `Views/Home`, `Search`, `Detail`, `Notifications`, `Components` | Solo dibujan y avisan al ViewModel |
+| **Navigation** | `RootView`, `Route` | Pila de navegación y creación de cada ViewModel con sus dependencias |
+
+### Decisiones técnicas
+
+- **Inyección de dependencias por protocolo:** los stores reciben `MovieServiceProtocol`, `FavoritesServiceProtocol`, `WatchlistServiceProtocol` y `NotificationServiceProtocol`. Así los tests usan mocks y no tocan internet, la base de datos ni las notificaciones reales.
+- **Stores compartidos:** Home, Detalle y Notificaciones leen el mismo `FavoritesStore` y `WatchlistStore`, por eso un favorito agregado en Detalle aparece al instante en Home.
+- **Guardar primero, actualizar después:** la lista en memoria solo cambia si SwiftData guardó bien. Si falla, se muestra el error y la interfaz no queda inconsistente.
+- **Se guarda la película completa** en favoritos y Por ver, porque el catálogo popular de TMDB cambia cada día.
+- **La búsqueda usa la API**, no solo las películas cargadas, para encontrar cualquier película de TMDB. Espera 400 ms después de la última letra para no hacer una solicitud por cada tecla.
+- **Las reglas de los recordatorios son funciones puras** (`WatchlistReminder.makeReminders(from:today:)`): reciben la fecha de hoy, por eso se pueden probar sin esperar 2 semanas.
+
+### Estructura de carpetas
+
+```
+Moonvies/
+├── Config/          Secrets.swift (no se sube)
+├── Models/
+├── Navigation/
+├── Services/
+├── State/
+├── Utilities/       AppTheme, makeRows
+├── ViewModels/
+└── Views/
+    ├── Components/
+    ├── Detail/
+    ├── Home/
+    ├── Notifications/
+    └── Search/
+MoonviesTests/
+└── Mocks/           MockMovieService, MockFavoritesService, MockWatchlistService, MockNotificationService, TestMovies
+```
+
+---
+
+## Pruebas
+
+Siguen el patrón **Arrange / Act / Assert**.
+
+| Archivo | Qué prueba |
+|---|---|
+| `MoviesStoreTests` (XCTest) | Estado inicial, carga, vacío, errores específicos, recuperación y paginación |
+| `HomeViewModelTests` | Top de la semana, mejor valorada del día, favoritos, Por ver, error y "Cargar más" |
+| `SearchViewModelTests` | Populares con campo vacío, buscando, resultados, mayúsculas/acentos/espacios, sin resultados, error y "Intentar nuevamente" |
+| `MovieDetailViewModelTests` | Agregar/quitar favoritos y Por ver, errores al guardar, sincronización con Home, sugerencias y recordatorio programado |
+| `FavoritesStoreTests` | Carga, agregar, repetida, límite de 20, fallas al guardar y al quitar |
+| `WatchlistStoreTests` | Agregar, repetida, falla al guardar, quitar, programar y cancelar recordatorios |
+| `WatchlistReminderTests` | Texto "Hace 2 semanas…", días/semanas, películas recientes vs. antiguas y orden |
+| `NotificationsViewModelTests` | Recordatorios de la pantalla y número de la campana |
+| `FavoritesServiceTests`, `WatchlistServiceTests` | Persistencia real con SwiftData en memoria |
+| `TMDBMovieTests` | Decodificación del JSON, valores por defecto y JSON inválido |
+| `MovieTests` | Fecha de estreno en español y fecha inválida |
+
+---
+
+## Fuera del alcance
+
+Siguiendo la rúbrica, no se incluyen login/perfiles, reseñas ni calificaciones propias del usuario, recomendaciones personalizadas, trailers ni funciones sociales.

@@ -1,7 +1,10 @@
 import SwiftUI
 
-/// Header cian de Home: logo, ajustes y barra de búsqueda
+/// Header cian de Home: logo, notificaciones y barra de búsqueda
 struct HomeHeaderView: View {
+    /// Recordatorios pendientes; se muestra como número rojo sobre la campana
+    let remindersCount: Int
+
     var body: some View {
         VStack(spacing: 16) {
             ZStack {
@@ -9,8 +12,7 @@ struct HomeHeaderView: View {
 
                 HStack {
                     Spacer()
-                    CircleIconView(systemName: "slider.vertical.3")
-                        .accessibilityLabel("Ajustes")
+                    NotificationsButtonView(remindersCount: remindersCount)
                 }
             }
 
@@ -22,6 +24,44 @@ struct HomeHeaderView: View {
             .accessibilityHint("Abre el buscador")
         }
         .headerStyle()
+    }
+}
+
+/// Campana que abre la pantalla Notificaciones
+struct NotificationsButtonView: View {
+    let remindersCount: Int
+
+    private var accessibilityText: String {
+        switch remindersCount {
+        case 0:
+            return "Notificaciones, sin recordatorios"
+        case 1:
+            return "Notificaciones, 1 recordatorio"
+        default:
+            return "Notificaciones, \(remindersCount) recordatorios"
+        }
+    }
+
+    var body: some View {
+        NavigationLink(value: Route.notifications) {
+            CircleIconView(systemName: remindersCount > 0 ? "bell.badge" : "bell")
+                .overlay(alignment: .topTrailing) {
+                    if remindersCount > 0 {
+                        Text("\(remindersCount)")
+                            .font(.caption2)
+                            .bold()
+                            .foregroundStyle(.white)
+                            .frame(minWidth: 18, minHeight: 18)
+                            .background(Color.red)
+                            .clipShape(Circle())
+                            .offset(x: 4, y: -4)
+                    }
+                }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilityText)
+        .accessibilityHint("Abre tus recordatorios de Por ver")
+        .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -57,6 +97,6 @@ struct SearchBarView: View {
 
 #Preview {
     NavigationStack {
-        HomeHeaderView()
+        HomeHeaderView(remindersCount: 2)
     }
 }

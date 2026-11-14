@@ -1,22 +1,23 @@
 import SwiftUI
 
-/// Pestañas personalizadas: Recomendado / Todo / Favoritos
+/// Pestañas personalizadas con scroll horizontal porque ya no caben en una fila
 /// Recibe la pestaña con `@Binding` porque el estado vive en `HomeView` (vista padre)
 struct TabSelectorView: View {
     @Binding var selectedTab: HomeTab
 
-    private let tabs: [HomeTab] = [.recommended, .all, .favorites]
+    private let tabs: [HomeTab] = [.recommended, .all, .favorites, .watchlist]
 
     var body: some View {
-        HStack(spacing: 8) {
-            ForEach(tabs, id: \.self) { tab in
-                TabButtonView(title: tab.rawValue, isSelected: tab == selectedTab) {
-                    selectedTab = tab
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(tabs, id: \.self) { tab in
+                    TabButtonView(title: tab.rawValue, isSelected: tab == selectedTab) {
+                        selectedTab = tab
+                    }
                 }
             }
-            Spacer()
+            .padding(.horizontal, AppTheme().screenPadding)
         }
-        .padding(.horizontal, AppTheme().screenPadding)
     }
 }
 

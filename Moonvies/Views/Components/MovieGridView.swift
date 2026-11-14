@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// Cuadrícula de 2 columnas hecha con VStack + HStack y la función genérica `makeRows`
-/// Se usa en Buscar y en la pestaña Favoritos
+/// Cuadrícula de 2 columnas hecha con LazyVStack + HStack y la función genérica `makeRows`
+/// Es perezosa para descargar los pósters solo al hacer scroll
+/// Se usa en Buscar y en las pestañas Todo, Favoritos y Por ver
 struct MovieGridView: View {
     let movies: [Movie]
 
@@ -12,7 +13,7 @@ struct MovieGridView: View {
     }
 
     var body: some View {
-        VStack(spacing: 20) {
+        LazyVStack(spacing: 20) {
             ForEach(0..<rows.count, id: \.self) { index in
                 HStack(alignment: .top, spacing: 16) {
                     ForEach(rows[index]) { movie in
@@ -62,7 +63,7 @@ struct MovieGridItemView: View {
 #Preview {
     NavigationStack {
         ScrollView {
-            MovieGridView(movies: MockMovies().all)
+            MovieGridView(movies: Movie.samples)
         }
     }
 }

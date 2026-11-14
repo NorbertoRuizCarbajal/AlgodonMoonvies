@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Ícono dentro de un círculo blanco (ajustes, regresar, inicio)
+/// Ícono dentro de un círculo blanco (notificaciones, regresar, inicio)
 /// Solo dibuja el círculo: cada pantalla decide si lo envuelve en un botón
 struct CircleIconView: View {
     let systemName: String
@@ -16,7 +16,7 @@ struct CircleIconView: View {
 }
 
 #Preview {
-    CircleIconView(systemName: "slider.vertical.3")
+    CircleIconView(systemName: "bell")
         .padding()
         .background(AppTheme().header)
 }

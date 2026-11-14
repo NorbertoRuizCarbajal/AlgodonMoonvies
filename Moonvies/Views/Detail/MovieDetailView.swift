@@ -32,8 +32,9 @@ struct MovieDetailView: View {
 
                             ActionsBarView(
                                 isFavorite: viewModel.isFavorite,
+                                isInWatchlist: viewModel.isInWatchlist,
                                 onFavorite: { viewModel.toggleFavorite() },
-                                onRate: { viewModel.showComingSoon("Calificar") }
+                                onWatchlist: { viewModel.toggleWatchlist() }
                             )
                         }
                         .padding(.horizontal, AppTheme().screenPadding)
@@ -58,9 +59,10 @@ struct MovieDetailView: View {
     NavigationStack {
         MovieDetailView(
             viewModel: MovieDetailViewModel(
-                movie: MockMovies().all[17],
+                movie: .sample,
                 moviesStore: .preview(),
-                favoritesStore: .preview()
+                favoritesStore: .preview(),
+                watchlistStore: .preview()
             ),
             onGoHome: {}
         )

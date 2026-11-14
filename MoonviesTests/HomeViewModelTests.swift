@@ -7,14 +7,16 @@ struct HomeViewModelTests {
 
     private func makeViewModel(
         movies: [Movie] = TestMovies.all,
-        savedFavoriteIDs: [String] = []
+        favorites: [Movie] = [],
+        watchlist: [Movie] = []
     ) async -> HomeViewModel {
         let moviesStore = MoviesStore(movieService: MockMovieService(moviesToReturn: movies))
         await moviesStore.loadMovies()
 
-        let favoritesStore = FavoritesStore(favoritesService: MockFavoritesService(savedIDs: savedFavoriteIDs))
+        let favoritesStore = FavoritesStore(favoritesService: MockFavoritesService(savedMovies: favorites))
+        let watchlistStore = WatchlistStore(watchlistService: MockWatchlistService(savedMovies: watchlist), notificationService: MockNotificationService())
 
-        return HomeViewModel(moviesStore: moviesStore, favoritesStore: favoritesStore)
+        return HomeViewModel(moviesStore: moviesStore, favoritesStore: favoritesStore, watchlistStore: watchlistStore)
     }
 
     @Test
@@ -48,7 +50,7 @@ struct HomeViewModelTests {
     @Test
     func favoriteMoviesKeepTheSavedOrder() async {
         // Arrange
-        let viewModel = await makeViewModel(savedFavoriteIDs: ["coco", "parasitos"])
+        let viewModel = await makeViewModel(favorites: [TestMovies.coco, TestMovies.parasite])
 
         // Act
         let favorites = viewModel.favoriteMovies
@@ -58,9 +60,9 @@ struct HomeViewModelTests {
     }
 
     @Test
-    func favoriteMoviesIgnoreIDsThatAreNotInTheCatalog() async {
-        // Arrange
-        let viewModel = await makeViewModel(savedFavoriteIDs: ["no-existe", "coco"])
+    func favoriteMoviesDoNotDependOnTheCatalog() async {
+        // Arrange: el catálogo cambia cada día, pero el favorito se conserva
+        let viewModel = await makeViewModel(movies: [TestMovies.roma], favorites: [TestMovies.coco])
 
         // Act
         let favorites = viewModel.favoriteMovies
@@ -74,7 +76,8 @@ struct HomeViewModelTests {
         // Arrange
         let moviesStore = MoviesStore(movieService: MockMovieService(moviesToReturn: [], error: .loadingFailed))
         let favoritesStore = FavoritesStore(favoritesService: MockFavoritesService())
-        let viewModel = HomeViewModel(moviesStore: moviesStore, favoritesStore: favoritesStore)
+        let watchlistStore = WatchlistStore(watchlistService: MockWatchlistService(), notificationService: MockNotificationService())
+        let viewModel = HomeViewModel(moviesStore: moviesStore, favoritesStore: favoritesStore, watchlistStore: watchlistStore)
 
         // Act
         await viewModel.retryLoading()
@@ -83,5 +86,49 @@ struct HomeViewModelTests {
         #expect(viewModel.loadState == .error(.loadFailed))
         #expect(viewModel.bestRatedToday == nil)
         #expect(viewModel.weeklyTop.isEmpty)
+    }
+
+    @Test
+    func allMoviesReturnsTheWholeCatalogInServiceOrder() async {
+        // Arrange
+        let viewModel = await makeViewModel()
+
+        // Act
+        let allMovies = viewModel.allMovies
+
+        // Assert
+        #expect(allMovies == TestMovies.all)
+    }
+
+    @Test
+    func watchlistMoviesComeFromTheSavedList() async {
+        // Arrange: Por ver no depende del catálogo cargado
+        let viewModel = await makeViewModel(movies: [], watchlist: [TestMovies.roma])
+
+        // Act
+        let watchlist = viewModel.watchlistMovies
+
+        // Assert
+        #expect(watchlist == [TestMovies.roma])
+    }
+
+    @Test
+    func loadMoreAddsTheNextPageToAllMovies() async {
+        // Arrange
+        let service = MockMovieService(pages: [[TestMovies.coco], [TestMovies.roma]])
+        let moviesStore = MoviesStore(movieService: service)
+        let viewModel = HomeViewModel(
+            moviesStore: moviesStore,
+            favoritesStore: FavoritesStore(favoritesService: MockFavoritesService()),
+            watchlistStore: WatchlistStore(watchlistService: MockWatchlistService(), notificationService: MockNotificationService())
+        )
+        await moviesStore.loadMovies()
+
+        // Act
+        await viewModel.loadMore()
+
+        // Assert
+        #expect(viewModel.allMovies == [TestMovies.coco, TestMovies.roma])
+        #expect(!viewModel.canLoadMore)
     }
 }

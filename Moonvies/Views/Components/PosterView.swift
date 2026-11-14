@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Póster dibujado con un color y un ícono (no usamos imágenes con copyright)
+/// Póster de TMDB. Mientras carga o si falla, se dibuja un color con un ícono
 /// Si `width` es `nil`, el póster toma el ancho que le dé la vista padre
 struct PosterView: View {
     let movie: Movie
@@ -9,6 +9,21 @@ struct PosterView: View {
     let showsTitle: Bool
 
     var body: some View {
+        placeholder
+            .overlay {
+                AsyncImage(url: movie.posterURL) { phase in
+                    if let image = phase.image {
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    }
+                }
+            }
+            .frame(width: width, height: height)
+            .clipShape(RoundedRectangle(cornerRadius: AppTheme().cornerRadius))
+    }
+
+    private var placeholder: some View {
         ZStack {
             Color(hue: movie.posterHue, saturation: 0.6, brightness: 0.75)
 
@@ -31,11 +46,9 @@ struct PosterView: View {
                 }
             }
         }
-        .frame(width: width, height: height)
-        .clipShape(RoundedRectangle(cornerRadius: AppTheme().cornerRadius))
     }
 }
 
 #Preview {
-    PosterView(movie: MockMovies().all[0], width: 140, height: 210, showsTitle: true)
+    PosterView(movie: .sample, width: 140, height: 210, showsTitle: true)
 }

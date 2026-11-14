@@ -23,22 +23,31 @@ struct FavoritesServiceTests {
         let service = makeService()
 
         // Act
-        let savedIDs = service.fetchFavoriteIDs()
+        let savedMovies = service.fetchMovies()
 
         // Assert
-        #expect(savedIDs.isEmpty)
+        #expect(savedMovies.isEmpty)
     }
 
     @Test
-    func saveFavoriteStoresTheMovieID() throws {
+    func savedFavoriteKeepsAllItsData() throws {
         // Arrange
-        let service = makeService()
+        let movie = Movie(
+            id: "7",
+            title: "Coco",
+            originalTitle: "Coco",
+            year: "2017",
+            releaseDate: "2017-10-27",
+            rating: 4.1,
+            synopsis: "Sinopsis",
+            posterPath: "/coco.jpg"
+        )
 
         // Act
-        try service.saveFavorite(movieID: "coco")
+        try makeService().saveFavorite(movie)
 
         // Assert
-        #expect(service.fetchFavoriteIDs() == ["coco"])
+        #expect(makeService().fetchMovies() == [movie])
     }
 
     @Test
@@ -47,36 +56,24 @@ struct FavoritesServiceTests {
         let service = makeService()
 
         // Act
-        try service.saveFavorite(movieID: "coco")
-        try service.saveFavorite(movieID: "roma")
+        try service.saveFavorite(TestMovies.coco)
+        try service.saveFavorite(TestMovies.roma)
 
         // Assert
-        #expect(service.fetchFavoriteIDs() == ["roma", "coco"])
+        #expect(service.fetchMovies() == [TestMovies.roma, TestMovies.coco])
     }
 
     @Test
     func removeFavoriteDeletesOnlyThatMovie() throws {
         // Arrange
         let service = makeService()
-        try service.saveFavorite(movieID: "coco")
-        try service.saveFavorite(movieID: "roma")
+        try service.saveFavorite(TestMovies.coco)
+        try service.saveFavorite(TestMovies.roma)
 
         // Act
-        try service.removeFavorite(movieID: "coco")
+        try service.removeFavorite(movieID: TestMovies.coco.id)
 
         // Assert
-        #expect(service.fetchFavoriteIDs() == ["roma"])
-    }
-
-    @Test
-    func favoritesAreStillThereWithANewContext() throws {
-        // Arrange: simula cerrar y volver a abrir la app con la misma base de datos
-        try makeService().saveFavorite(movieID: "coco")
-
-        // Act
-        let savedIDs = makeService().fetchFavoriteIDs()
-
-        // Assert
-        #expect(savedIDs == ["coco"])
+        #expect(service.fetchMovies() == [TestMovies.roma])
     }
 }
