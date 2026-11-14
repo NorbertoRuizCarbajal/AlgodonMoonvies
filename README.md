@@ -191,8 +191,3 @@ Siguen el patrón **Arrange / Act / Assert**.
 | `TMDBMovieTests` | Decodificación del JSON, valores por defecto y JSON inválido |
 | `MovieTests` | Fecha de estreno en español y fecha inválida |
 
----
-
-## Fuera del alcance
-
-Siguiendo la rúbrica, no se incluyen login/perfiles, reseñas ni calificaciones propias del usuario, recomendaciones personalizadas, trailers ni funciones sociales.
