@@ -1,6 +1,6 @@
 # Moonvies
 
-Aplicación iOS para descubrir películas, buscarlas, consultar su información y llevar una lista personal de **favoritas** y **pendientes por ver**. Usa la API de **TMDB** (Opción A del proyecto integrador).
+Aplicación iOS para descubrir películas, buscarlas, consultar su información y llevar una lista personal de favoritas y pendientes por ver. Usa la API de TMDB.
 
 ---
 
@@ -151,3 +151,4 @@ Si el token falta, la app muestra *"Falta el token de TMDB. Pégalo en Secrets.s
 
 - Sánchez Baños Lizeth Marisol
 - Ruiz Carbajal Norberto
+- Avila Aguilar Alberto
