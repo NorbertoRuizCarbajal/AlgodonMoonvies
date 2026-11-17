@@ -151,4 +151,4 @@ Si el token falta, la app muestra *"Falta el token de TMDB. Pégalo en Secrets.s
 
 - Sánchez Baños Lizeth Marisol
 - Ruiz Carbajal Norberto
-- Avila Aguilar Alberto
+- Ávila Aguilar Alberto

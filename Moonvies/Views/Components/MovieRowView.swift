@@ -35,6 +35,6 @@ struct MovieRowView: View {
 
 #Preview {
     NavigationStack {
-        MovieRowView(title: "Top de la semana", movies: MockMovies().all)
+        MovieRowView(title: "Top de la semana", movies: Movie.samples)
     }
 }

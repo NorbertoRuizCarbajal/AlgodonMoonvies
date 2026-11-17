@@ -5,4 +5,5 @@ enum HomeTab: String {
     case recommended = "Recomendado"
     case all = "Todo"
     case favorites = "Favoritos"
+    case watchlist = "Por ver"
 }

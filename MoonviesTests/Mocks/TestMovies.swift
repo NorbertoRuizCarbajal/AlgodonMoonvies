@@ -29,8 +29,10 @@ enum TestMovies {
             title: title,
             originalTitle: originalTitle,
             year: "2020",
+            releaseDate: "2020-01-15",
             rating: rating,
-            synopsis: "Sinopsis de prueba"
+            synopsis: "Sinopsis de prueba",
+            posterPath: nil
         )
     }
 }

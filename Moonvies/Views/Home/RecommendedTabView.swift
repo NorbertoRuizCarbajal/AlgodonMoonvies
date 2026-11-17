@@ -24,8 +24,8 @@ struct RecommendedTabView: View {
     NavigationStack {
         ScrollView {
             RecommendedTabView(
-                bestRatedMovie: MockMovies().all[2],
-                weeklyTop: MockMovies().all
+                bestRatedMovie: .sample,
+                weeklyTop: Movie.samples
             )
         }
     }

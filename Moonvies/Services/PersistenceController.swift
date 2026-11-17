@@ -7,7 +7,8 @@ struct PersistenceController {
     /// `inMemory: true` guarda todo solo en memoria (para #Preview y tests)
     static func makeModelContainer(inMemory: Bool) -> ModelContainer {
         let schema = Schema([
-            FavoriteMovie.self
+            FavoriteMovie.self,
+            WatchlistMovie.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: inMemory)
 

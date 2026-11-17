@@ -1,10 +1,11 @@
 import SwiftUI
 
-/// Las acciones del detalle: agregar a favoritos y calificar
+/// Las acciones del detalle: favoritos y Por ver
 struct ActionsBarView: View {
     let isFavorite: Bool
+    let isInWatchlist: Bool
     let onFavorite: () -> Void
-    let onRate: () -> Void
+    let onWatchlist: () -> Void
 
     var body: some View {
         HStack(alignment: .top, spacing: 8) {
@@ -18,11 +19,12 @@ struct ActionsBarView: View {
             .accessibilityAddTraits(isFavorite ? .isSelected : [])
 
             ActionButtonView(
-                iconName: "hand.thumbsup",
-                title: "Calificar",
-                iconColor: .primary,
-                action: onRate
+                iconName: isInWatchlist ? "bookmark.fill" : "bookmark",
+                title: isInWatchlist ? "En Por ver" : "Agregar a Por ver",
+                iconColor: isInWatchlist ? AppTheme().accent : .primary,
+                action: onWatchlist
             )
+            .accessibilityAddTraits(isInWatchlist ? .isSelected : [])
         }
     }
 }
@@ -60,6 +62,6 @@ struct ActionButtonView: View {
 }
 
 #Preview {
-    ActionsBarView(isFavorite: true, onFavorite: {}, onRate: {})
+    ActionsBarView(isFavorite: true, isInWatchlist: false, onFavorite: {}, onWatchlist: {})
         .padding()
 }

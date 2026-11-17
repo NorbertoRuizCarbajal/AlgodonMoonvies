@@ -1,8 +1,7 @@
 import Foundation
 import Observation
 
-/// Lógica del detalle de una película: favoritos, sugerencias y avisos
-/// Antes todo esto vivía dentro de `MovieDetailView`
+/// Lógica del detalle de una película: favoritos, Por ver, sugerencias y avisos
 @MainActor
 @Observable
 final class MovieDetailViewModel {
@@ -11,16 +10,22 @@ final class MovieDetailViewModel {
 
     private let moviesStore: MoviesStore
     private let favoritesStore: FavoritesStore
+    private let watchlistStore: WatchlistStore
 
-    init(movie: Movie, moviesStore: MoviesStore, favoritesStore: FavoritesStore) {
+    init(movie: Movie, moviesStore: MoviesStore, favoritesStore: FavoritesStore, watchlistStore: WatchlistStore) {
         self.movie = movie
         self.moviesStore = moviesStore
         self.favoritesStore = favoritesStore
+        self.watchlistStore = watchlistStore
     }
 
     /// Se lee del store compartido: nunca se desincroniza con la pestaña Favoritos
     var isFavorite: Bool {
         favoritesStore.isFavorite(movie)
+    }
+
+    var isInWatchlist: Bool {
+        watchlistStore.contains(movie)
     }
 
     var suggestions: [Movie] {
@@ -50,10 +55,23 @@ final class MovieDetailViewModel {
         }
     }
 
-    // MARK: - Funciones que todavía no existen (por ahora, Calificar)
+    // MARK: - Por ver
 
-    func showComingSoon(_ feature: String) {
-        showMessage("\(feature) estará disponible pronto", isError: false)
+    func toggleWatchlist() {
+        do {
+            guard !isInWatchlist else {
+                try watchlistStore.remove(movie)
+                showMessage("Quitada de Por ver", isError: false)
+                return
+            }
+
+            try watchlistStore.add(movie)
+            showMessage("Agregada a Por ver. Te la recordaremos en 2 semanas", isError: false)
+        } catch let watchlistError as WatchlistError {
+            showMessage(watchlistError.message, isError: true)
+        } catch {
+            showMessage("No se pudo actualizar Por ver.", isError: true)
+        }
     }
 
     // MARK: - Avisos

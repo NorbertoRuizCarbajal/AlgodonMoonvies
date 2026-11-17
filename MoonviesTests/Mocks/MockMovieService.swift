@@ -6,18 +6,51 @@ enum MockServiceError: Error {
     case savingFailed
 }
 
-/// Reemplaza a `MovieService` en los tests: regresa las películas que le pasemos o un error
+/// Reemplaza a `MovieService` en los tests: regresa las páginas que le pasemos o un error
 struct MockMovieService: MovieServiceProtocol {
 
-    let moviesToReturn: [Movie]
-    var error: MockServiceError? = nil
+    let pages: [[Movie]]
+    var error: MockServiceError?
+    /// Número de página que falla con `MovieError.noConnection`
+    var failingPage: Int?
 
-    func fetchMovies() async throws -> [Movie] {
+    init(moviesToReturn: [Movie], error: MockServiceError? = nil) {
+        self.pages = [moviesToReturn]
+        self.error = error
+        self.failingPage = nil
+    }
+
+    init(pages: [[Movie]], failingPage: Int? = nil) {
+        self.pages = pages
+        self.error = nil
+        self.failingPage = failingPage
+    }
+
+    func fetchMovies(page: Int) async throws -> MoviesPage {
+        if let error {
+            throw error
+        }
+        if page == failingPage {
+            throw MovieError.noConnection
+        }
+
+        let index = page - 1
+        let movies = pages.indices.contains(index) ? pages[index] : []
+
+        return MoviesPage(movies: movies, page: page, totalPages: pages.count)
+    }
+
+    /// Simula `GET /3/search/movie`: busca en todas sus páginas sin importar mayúsculas ni acentos
+    func searchMovies(query: String) async throws -> [Movie] {
         if let error {
             throw error
         }
 
-        return moviesToReturn
+        let allMovies = pages.flatMap { $0 }
+
+        return allMovies.filter {
+            $0.title.localizedStandardContains(query) || $0.originalTitle.localizedStandardContains(query)
+        }
     }
 }
 
@@ -26,7 +59,11 @@ struct FailingMovieService: MovieServiceProtocol {
 
     let error: MovieError
 
-    func fetchMovies() async throws -> [Movie] {
+    func fetchMovies(page: Int) async throws -> MoviesPage {
+        throw error
+    }
+
+    func searchMovies(query: String) async throws -> [Movie] {
         throw error
     }
 }

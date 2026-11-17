@@ -8,8 +8,8 @@ import Observation
 @MainActor
 @Observable
 final class FavoritesStore {
-    /// Identificadores de las películas, del favorito más reciente al más antiguo
-    private(set) var favoriteIDs: [String]
+    /// Del favorito más reciente al más antiguo
+    private(set) var movies: [Movie]
 
     let maximumFavorites = 20
 
@@ -17,11 +17,11 @@ final class FavoritesStore {
 
     init(favoritesService: any FavoritesServiceProtocol) {
         self.favoritesService = favoritesService
-        self.favoriteIDs = favoritesService.fetchFavoriteIDs()
+        self.movies = favoritesService.fetchMovies()
     }
 
     func isFavorite(_ movie: Movie) -> Bool {
-        favoriteIDs.contains(movie.id)
+        movies.contains { $0.id == movie.id }
     }
 
     /// Primero se guarda en el dispositivo y solo si funcionó se actualiza la lista
@@ -29,17 +29,17 @@ final class FavoritesStore {
         guard !isFavorite(movie) else {
             throw FavoriteError.alreadyAdded
         }
-        guard favoriteIDs.count < maximumFavorites else {
+        guard movies.count < maximumFavorites else {
             throw FavoriteError.limitReached
         }
 
         do {
-            try favoritesService.saveFavorite(movieID: movie.id)
+            try favoritesService.saveFavorite(movie)
         } catch {
             throw FavoriteError.saveFailed
         }
 
-        favoriteIDs.insert(movie.id, at: 0)
+        movies.insert(movie, at: 0)
     }
 
     func remove(_ movie: Movie) throws {
@@ -49,7 +49,7 @@ final class FavoritesStore {
             throw FavoriteError.removeFailed
         }
 
-        favoriteIDs.removeAll { $0 == movie.id }
+        movies.removeAll { $0.id == movie.id }
     }
 }
 

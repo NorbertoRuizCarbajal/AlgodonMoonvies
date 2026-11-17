@@ -4,8 +4,8 @@ import SwiftData
 /// Contrato para guardar los favoritos de forma permanente
 /// `FavoritesStore` solo conoce este protocolo; en los tests se reemplaza por un mock
 protocol FavoritesServiceProtocol {
-    func fetchFavoriteIDs() -> [String]
-    func saveFavorite(movieID: String) throws
+    func fetchMovies() -> [Movie]
+    func saveFavorite(_ movie: Movie) throws
     func removeFavorite(movieID: String) throws
 }
 
@@ -18,20 +18,20 @@ final class FavoritesService: FavoritesServiceProtocol {
         self.context = context
     }
 
-    /// Ids guardados, del favorito más reciente al más antiguo
-    func fetchFavoriteIDs() -> [String] {
+    /// Del favorito más reciente al más antiguo
+    func fetchMovies() -> [Movie] {
         let descriptor = FetchDescriptor<FavoriteMovie>(
             sortBy: [SortDescriptor(\.addedAt, order: .reverse)]
         )
 
         let favorites = (try? context.fetch(descriptor)) ?? []
 
-        return favorites.map { $0.movieID }
+        // Los favoritos del esquema anterior no tienen título y no se pueden mostrar
+        return favorites.filter { !$0.title.isEmpty }.map { $0.movie }
     }
 
-    func saveFavorite(movieID: String) throws {
-        let favorite = FavoriteMovie(movieID: movieID, addedAt: Date())
-        context.insert(favorite)
+    func saveFavorite(_ movie: Movie) throws {
+        context.insert(FavoriteMovie(movie: movie, addedAt: Date()))
 
         try context.save()
     }
@@ -43,9 +43,7 @@ final class FavoritesService: FavoritesServiceProtocol {
             }
         )
 
-        let savedFavorites = try context.fetch(descriptor)
-
-        for favorite in savedFavorites {
+        for favorite in try context.fetch(descriptor) {
             context.delete(favorite)
         }
 

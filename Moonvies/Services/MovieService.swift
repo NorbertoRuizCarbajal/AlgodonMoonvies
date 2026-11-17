@@ -1,43 +1,49 @@
 import Foundation
 
-/// Contrato para obtener el catálogo de películas
+/// Contrato para obtener películas de TMDB
 protocol MovieServiceProtocol {
-    func fetchMovies() async throws -> [Movie]
+    func fetchMovies(page: Int) async throws -> MoviesPage
+    func searchMovies(query: String) async throws -> [Movie]
 }
 
-/// Consulta `GET /3/movie/popular` de TMDB
+/// Consulta la API de TMDB:
+/// - `GET /3/movie/popular` para el catálogo
+/// - `GET /3/search/movie` para la búsqueda
 struct MovieService: MovieServiceProtocol {
 
-    func fetchMovies() async throws -> [Movie] {
-        let request = try makePopularMoviesRequest()
+    func fetchMovies(page: Int) async throws -> MoviesPage {
+        let request = try makeRequest(
+            path: "movie/popular",
+            queryItems: [URLQueryItem(name: "page", value: String(page))]
+        )
 
-        let data = try await send(request)
+        return try await sendAndDecode(request).toPage()
+    }
 
-        let result: TMDBMoviesResponse
-        do {
-            result = try JSONDecoder().decode(TMDBMoviesResponse.self, from: data)
-        } catch {
-            throw MovieError.decodingFailed
-        }
+    func searchMovies(query: String) async throws -> [Movie] {
+        let request = try makeRequest(
+            path: "search/movie",
+            queryItems: [
+                URLQueryItem(name: "query", value: query),
+                URLQueryItem(name: "include_adult", value: "false")
+            ]
+        )
 
-        return result.results.map { $0.toMovie() }
+        return try await sendAndDecode(request).toPage().movies
     }
 
     // MARK: - Pasos de la solicitud
 
-    private func makePopularMoviesRequest() throws -> URLRequest {
+    private func makeRequest(path: String, queryItems: [URLQueryItem]) throws -> URLRequest {
         guard Secrets.tmdbToken != "PEGA_AQUI_TU_TOKEN", !Secrets.tmdbToken.isEmpty else {
             throw MovieError.missingAPIKey
         }
 
-        guard var components = URLComponents(string: "https://api.themoviedb.org/3/movie/popular") else {
+        guard var components = URLComponents(string: "https://api.themoviedb.org/3/" + path) else {
             throw MovieError.invalidURL
         }
 
-        components.queryItems = [
-            URLQueryItem(name: "language", value: "es-MX"),
-            URLQueryItem(name: "page", value: "1")
-        ]
+        components.queryItems = [URLQueryItem(name: "language", value: "es-MX")] + queryItems
 
         guard let url = components.url else {
             throw MovieError.invalidURL
@@ -51,8 +57,8 @@ struct MovieService: MovieServiceProtocol {
         return request
     }
 
-    /// Ejecuta la solicitud y valida el código HTTP
-    private func send(_ request: URLRequest) async throws -> Data {
+    /// Ejecuta la solicitud, valida el código HTTP y decodifica el JSON
+    private func sendAndDecode(_ request: URLRequest) async throws -> TMDBMoviesResponse {
         let data: Data
         let response: URLResponse
 
@@ -70,6 +76,10 @@ struct MovieService: MovieServiceProtocol {
             throw MovieError.httpStatus(httpResponse.statusCode)
         }
 
-        return data
+        do {
+            return try JSONDecoder().decode(TMDBMoviesResponse.self, from: data)
+        } catch {
+            throw MovieError.decodingFailed
+        }
     }
 }

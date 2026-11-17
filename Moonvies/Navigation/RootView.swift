@@ -6,22 +6,32 @@ import SwiftUI
 struct RootView: View {
     @Environment(MoviesStore.self) private var moviesStore
     @Environment(FavoritesStore.self) private var favoritesStore
+    @Environment(WatchlistStore.self) private var watchlistStore
 
     @State private var path: [Route] = []
 
     var body: some View {
         NavigationStack(path: $path) {
-            HomeView(viewModel: HomeViewModel(moviesStore: moviesStore, favoritesStore: favoritesStore))
+            HomeView(
+                viewModel: HomeViewModel(
+                    moviesStore: moviesStore,
+                    favoritesStore: favoritesStore,
+                    watchlistStore: watchlistStore
+                )
+            )
                 .navigationDestination(for: Route.self) { route in
                     switch route {
                     case .search:
                         SearchView(viewModel: SearchViewModel(moviesStore: moviesStore))
+                    case .notifications:
+                        NotificationsView(viewModel: NotificationsViewModel(watchlistStore: watchlistStore))
                     case .detail(let movie):
                         MovieDetailView(
                             viewModel: MovieDetailViewModel(
                                 movie: movie,
                                 moviesStore: moviesStore,
-                                favoritesStore: favoritesStore
+                                favoritesStore: favoritesStore,
+                                watchlistStore: watchlistStore
                             ),
                             onGoHome: goHome
                         )
@@ -45,4 +55,5 @@ struct RootView: View {
     RootView()
         .environment(MoviesStore.preview())
         .environment(FavoritesStore.preview())
+        .environment(WatchlistStore.preview())
 }

@@ -16,6 +16,8 @@ struct TMDBMovieTests {
         // Arrange
         let json = """
         {
+          "page": 1,
+          "total_pages": 500,
           "results": [
             {
               "id": 550,
@@ -23,7 +25,8 @@ struct TMDBMovieTests {
               "original_title": "Fight Club",
               "overview": "Un oficinista insomne conoce a un vendedor de jabón.",
               "release_date": "1999-10-15",
-              "vote_average": 8.4
+              "vote_average": 8.4,
+              "poster_path": "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg"
             }
           ]
         }
@@ -38,14 +41,31 @@ struct TMDBMovieTests {
         #expect(movies[0].title == "El club de la pelea")
         #expect(movies[0].originalTitle == "Fight Club")
         #expect(movies[0].year == "1999")
+        #expect(movies[0].releaseDate == "1999-10-15")
         #expect(movies[0].rating == 4.2)
+        #expect(movies[0].posterPath == "/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg")
+        #expect(movies[0].posterURL?.absoluteString == "https://image.tmdb.org/t/p/w500/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg")
+    }
+
+    @Test
+    func convertsTheResponseToAPageWithItsNumbers() throws {
+        // Arrange
+        let json = #"{ "page": 3, "total_pages": 500, "results": [] }"#
+
+        // Act
+        let page = try decode(json).toPage()
+
+        // Assert
+        #expect(page.page == 3)
+        #expect(page.totalPages == 500)
+        #expect(page.movies.isEmpty)
     }
 
     @Test
     func usesDefaultsWhenOptionalFieldsAreMissing() throws {
         // Arrange: solo vienen los campos obligatorios
         let json = """
-        { "results": [ { "id": 1, "title": "Sin datos" } ] }
+        { "page": 1, "total_pages": 1, "results": [ { "id": 1, "title": "Sin datos" } ] }
         """
 
         // Act
@@ -53,15 +73,17 @@ struct TMDBMovieTests {
 
         // Assert
         #expect(movie.year == "s/f")
+        #expect(movie.releaseDateText == "Fecha de estreno no disponible")
         #expect(movie.rating == 0)
         #expect(movie.synopsis == "Sin sinopsis disponible.")
         #expect(movie.originalTitle == "Sin datos")
+        #expect(movie.posterURL == nil)
     }
 
     @Test
     func emptyResultsDecodeToAnEmptyList() throws {
         // Arrange
-        let json = #"{ "results": [] }"#
+        let json = #"{ "page": 1, "total_pages": 1, "results": [] }"#
 
         // Act
         let response = try decode(json)

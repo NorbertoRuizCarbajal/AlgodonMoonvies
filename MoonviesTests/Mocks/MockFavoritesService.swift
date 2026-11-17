@@ -1,28 +1,28 @@
 import Foundation
 @testable import Moonvies
 
-/// Reemplaza a `FavoritesService` en los tests: guarda los ids en un arreglo en lugar de SwiftData
+/// Reemplaza a `FavoritesService` en los tests: guarda las películas en un arreglo en lugar de SwiftData
 @MainActor
 final class MockFavoritesService: FavoritesServiceProtocol {
 
-    private(set) var savedIDs: [String]
+    private(set) var savedMovies: [Movie]
     var shouldFail: Bool
 
-    init(savedIDs: [String] = [], shouldFail: Bool = false) {
-        self.savedIDs = savedIDs
+    init(savedMovies: [Movie] = [], shouldFail: Bool = false) {
+        self.savedMovies = savedMovies
         self.shouldFail = shouldFail
     }
 
-    func fetchFavoriteIDs() -> [String] {
-        savedIDs
+    func fetchMovies() -> [Movie] {
+        savedMovies
     }
 
-    func saveFavorite(movieID: String) throws {
+    func saveFavorite(_ movie: Movie) throws {
         guard !shouldFail else {
             throw MockServiceError.savingFailed
         }
 
-        savedIDs.insert(movieID, at: 0)
+        savedMovies.insert(movie, at: 0)
     }
 
     func removeFavorite(movieID: String) throws {
@@ -30,6 +30,6 @@ final class MockFavoritesService: FavoritesServiceProtocol {
             throw MockServiceError.savingFailed
         }
 
-        savedIDs.removeAll { $0 == movieID }
+        savedMovies.removeAll { $0.id == movieID }
     }
 }

@@ -12,6 +12,6 @@ struct PosterHeroView: View {
 }
 
 #Preview {
-    PosterHeroView(movie: MockMovies().all[17])
+    PosterHeroView(movie: .sample)
         .padding()
 }

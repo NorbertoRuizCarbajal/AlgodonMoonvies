@@ -1,8 +1,20 @@
 import Foundation
 
-/// Respuesta de `GET /3/movie/popular`
+/// Respuesta de `GET /3/movie/popular` y de `GET /3/search/movie` (tienen la misma forma)
 struct TMDBMoviesResponse: Decodable {
+    let page: Int
+    let totalPages: Int
     let results: [TMDBMovie]
+
+    enum CodingKeys: String, CodingKey {
+        case page
+        case totalPages = "total_pages"
+        case results
+    }
+
+    func toPage() -> MoviesPage {
+        MoviesPage(movies: results.map { $0.toMovie() }, page: page, totalPages: totalPages)
+    }
 }
 
 /// Película como la manda TMDB
@@ -14,6 +26,7 @@ struct TMDBMovie: Decodable {
     let releaseDate: String?
     /// TMDB califica de 0 a 10
     let voteAverage: Double?
+    let posterPath: String?
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -22,6 +35,7 @@ struct TMDBMovie: Decodable {
         case overview
         case releaseDate = "release_date"
         case voteAverage = "vote_average"
+        case posterPath = "poster_path"
     }
 
     func toMovie() -> Movie {
@@ -34,9 +48,11 @@ struct TMDBMovie: Decodable {
             title: title,
             originalTitle: originalTitle ?? title,
             year: yearText.isEmpty ? "s/f" : yearText,
+            releaseDate: releaseDate ?? "",
             // Escala de 0-10 a 0-5
             rating: (voteAverage ?? 0) / 2,
-            synopsis: overviewText.isEmpty ? "Sin sinopsis disponible." : overviewText
+            synopsis: overviewText.isEmpty ? "Sin sinopsis disponible." : overviewText,
+            posterPath: posterPath
         )
     }
 }

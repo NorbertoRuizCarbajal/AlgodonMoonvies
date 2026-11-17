@@ -17,7 +17,7 @@ struct StarsView: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Calificación: \(String(rating)) de 5")
+        .accessibilityLabel("Calificación: \(String(format: "%.1f", rating)) de 5")
     }
 }
 

@@ -4,5 +4,6 @@ import Foundation
 /// Home no aparece aquí porque es la raíz del `NavigationStack`
 enum Route: Hashable {
     case search
+    case notifications
     case detail(Movie)
 }
