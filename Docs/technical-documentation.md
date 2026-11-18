@@ -16,7 +16,7 @@ Views ──▶ ViewModels ──▶ Stores (estado compartido) ──▶ Servic
 
 | Capa | Archivos principales | Responsabilidad |
 |---|---|---|
-| **App** | `MoonviesApp` | Crea el `ModelContainer`, los servicios y los stores **una sola vez** y los reparte con `.environment(...)` |
+| **App** | `MoonviesApp` | Crea el `ModelContainer`, los servicios y los stores **una sola vez** y se los pasa por parámetro a `RootView`` |
 | **Navigation** | `RootView`, `Route` | `NavigationStack` con `path`. `Route` define los destinos `search`, `notifications` y `detail(Movie)`. Crea cada ViewModel con sus dependencias |
 | **Views** | `Views/Home`, `Search`, `Detail`, `Notifications`, `Components` | Solo dibujan el estado y avisan al ViewModel de las acciones del usuario |
 | **ViewModels** | `HomeViewModel`, `SearchViewModel`, `MovieDetailViewModel`, `NotificationsViewModel` | Preparan los datos de cada pantalla (secciones, mensajes, estados) y reaccionan a las acciones |
@@ -166,6 +166,7 @@ Operaciones: `FetchDescriptor` ordenado por `addedAt` (de la más reciente a la 
 ## 4. Decisiones técnicas
 
 - **MVVM con stores compartidos.** Home, Detalle y Notificaciones leen el mismo `FavoritesStore` y `WatchlistStore`. Por eso un favorito agregado en Detalle aparece al instante en Home sin recargar.
+- **Stores por parámetro y no por `.environment`.** La única vista que necesitaba los stores era `RootView`, que de todos modos se los pasa a cada ViewModel. Repartirlos por el entorno no aportaba nada y ocultaba las dependencias, así que ahora `MoonviesApp` se los pasa directamente.
 - **Inyección de dependencias por protocolo.** Los stores reciben `MovieServiceProtocol`, `FavoritesServiceProtocol`, `WatchlistServiceProtocol` y `NotificationServiceProtocol`. Las pruebas usan mocks y no tocan internet, la base de datos ni las notificaciones reales.
 - **Primero guardar, después actualizar.** La lista en memoria solo cambia si SwiftData guardó bien. Si falla, se muestra el error y la interfaz no queda inconsistente.
 - **Se guarda la película completa** en favoritos y Por ver, porque el catálogo popular de TMDB cambia cada día y la película podría dejar de aparecer en él.
@@ -173,7 +174,7 @@ Operaciones: `FetchDescriptor` ordenado por `addedAt` (de la más reciente a la 
 - **Paginación sin duplicados.** "Cargar más" pide la siguiente página y descarta los `id` que ya estaban cargados. Si falla, conserva las películas existentes.
 - **Reglas puras para los recordatorios.** `WatchlistReminder.makeReminders(from:today:)` recibe la fecha de hoy como parámetro, así se puede probar sin esperar 2 semanas.
 - **Notificaciones locales**, no push: no se necesita servidor.
-- **Token fuera del código.** `Secrets.swift` está en el `.gitignore`. Si falta, la app muestra un mensaje claro en lugar de fallar en silencio.
+- **Token fuera del repositorio.** `Secrets.swift` se sube con un texto de ejemplo (`PEGA_AQUI_TU_TOKEN`) para que el proyecto compile al descargarlo. Cada quien pega su token y usa `git update-index --skip-worktree` para no subirlo. Si falta, la app muestra un mensaje claro en lugar de fallar en silencio.
 - **Idioma `es-MX`** en las solicitudes, porque la app está dirigida a usuarios en español.
 
 ---
