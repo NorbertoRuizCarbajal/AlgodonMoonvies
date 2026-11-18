@@ -2,11 +2,12 @@ import SwiftUI
 
 /// Raíz de la navegación. Aquí vive la pila de pantallas (`path`),
 /// aquí se decide qué vista corresponde a cada `Route`
-/// y aquí se crea el ViewModel de cada pantalla con lo que necesita
+/// y aquí se crea el ViewModel de cada pantalla con lo que necesita.
+/// Recibe los stores por parámetro desde `MoonviesApp`
 struct RootView: View {
-    @Environment(MoviesStore.self) private var moviesStore
-    @Environment(FavoritesStore.self) private var favoritesStore
-    @Environment(WatchlistStore.self) private var watchlistStore
+    let moviesStore: MoviesStore
+    let favoritesStore: FavoritesStore
+    let watchlistStore: WatchlistStore
 
     @State private var path: [Route] = []
 
@@ -52,8 +53,9 @@ struct RootView: View {
 }
 
 #Preview {
-    RootView()
-        .environment(MoviesStore.preview())
-        .environment(FavoritesStore.preview())
-        .environment(WatchlistStore.preview())
+    RootView(
+        moviesStore: .preview(),
+        favoritesStore: .preview(),
+        watchlistStore: .preview()
+    )
 }

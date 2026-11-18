@@ -16,7 +16,7 @@ struct FavoritesTabView: View {
 #Preview {
     NavigationStack {
         ScrollView {
-            FavoritesTabView(movies: Array(MockMovies().all.prefix(3)))
+            FavoritesTabView(movies: Movie.samples)
         }
     }
 }

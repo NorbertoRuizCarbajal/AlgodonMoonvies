@@ -7,8 +7,7 @@ struct MoonviesApp: App {
     /// Base de datos local donde se guardan favoritos y Por ver
     private let sharedModelContainer: ModelContainer
 
-    // Estado compartido de toda la app: se crea una sola vez aquí
-    // y se reparte con `.environment(...)`
+    
     @State private var moviesStore: MoviesStore
     @State private var favoritesStore: FavoritesStore
     @State private var watchlistStore: WatchlistStore
@@ -32,12 +31,13 @@ struct MoonviesApp: App {
     }
 
     var body: some Scene {
-        WindowGroup {
-            RootView()
-                .environment(moviesStore)
-                .environment(favoritesStore)
-                .environment(watchlistStore)
+            WindowGroup {
+                RootView(
+                    moviesStore: moviesStore,
+                    favoritesStore: favoritesStore,
+                    watchlistStore: watchlistStore
+                )
+            }
+            .modelContainer(sharedModelContainer)
         }
-        .modelContainer(sharedModelContainer)
-    }
 }

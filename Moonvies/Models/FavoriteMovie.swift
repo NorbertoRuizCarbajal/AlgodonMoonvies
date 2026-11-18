@@ -7,13 +7,12 @@ import SwiftData
 final class FavoriteMovie {
     var movieID: String
     var addedAt: Date
-    // Los valores por defecto permiten migrar favoritos guardados con el esquema anterior
-    var title: String = ""
-    var originalTitle: String = ""
-    var year: String = ""
-    var releaseDate: String = ""
-    var rating: Double = 0
-    var synopsis: String = ""
+    var title: String
+    var originalTitle: String
+    var year: String
+    var releaseDate: String
+    var rating: Double
+    var synopsis: String
     var posterPath: String?
 
     init(movie: Movie, addedAt: Date) {

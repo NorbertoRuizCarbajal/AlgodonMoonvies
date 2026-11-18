@@ -115,8 +115,7 @@ La app usa la **API v3 de TMDB** con autenticación por token Bearer.
 
 1. Crea una cuenta en [themoviedb.org](https://www.themoviedb.org/).
 2. Ve a **Ajustes → API** y copia el **API Read Access Token**. Es el token largo, no la "API Key" corta.
-3. Copia la plantilla `Docs/Secrets.example.swift` a la carpeta `Moonvies/Config/` y renómbrala como `Secrets.swift`.
-4. Dentro de `Secrets.swift`, reemplaza `PEGA_AQUI_TU_TOKEN` por tu token:
+3. Abre `Moonvies/Config/Secrets.swift` y reemplaza `PEGA_AQUI_TU_TOKEN` por tu token:
 
    ```swift
    import Foundation
@@ -126,8 +125,11 @@ La app usa la **API v3 de TMDB** con autenticación por token Bearer.
    }
    ```
 
-`Secrets.swift` está en el `.gitignore`: **nunca subas tu token al repositorio**.
+**Nunca subas tu token al repositorio.** Para que git ignore tus cambios en ese archivo, corre una sola vez:
 
+```bash
+git update-index --skip-worktree Moonvies/Config/Secrets.swift
+```
 Si el token falta, la app muestra *"Falta el token de TMDB. Pégalo en Secrets.swift."*. Si el token es incorrecto, muestra *"El token de TMDB no es válido (error 401)."*.
 
 ---
